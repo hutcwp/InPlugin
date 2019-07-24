@@ -1,13 +1,12 @@
-package com.hutcwp.inplugin
+package com.hutcwp.plugina
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 
-class StubActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_stub)
+        setContentView(R.layout.activity_main_plugin)
     }
-
 }

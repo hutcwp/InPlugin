@@ -1,8 +1,7 @@
-package com.hutcwp.inplugin.hook;
+package com.hutcwp.inplugin;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class RefInvoke {
@@ -91,17 +90,9 @@ public class RefInvoke {
             method.setAccessible(true);
             return method.invoke(obj, pareVaules);
 
-        } catch (SecurityException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        } 
 
         return null;
     }

@@ -1,7 +1,8 @@
-package com.hutcwp.inplugin.hook;
+package com.hutcwp.inplugin.ams_hook;
 
 import android.os.Build;
 import android.os.Handler;
+import com.hutcwp.inplugin.RefInvoke;
 
 
 import java.lang.reflect.InvocationTargetException;
@@ -23,7 +24,6 @@ public class AMSHookHelper {
             NoSuchMethodException, InvocationTargetException,
             IllegalAccessException, NoSuchFieldException {
 
-
         //获取AMN的gDefault单例gDefault，gDefault是final静态的
         Object gDefault = null;
         if (Build.VERSION.SDK_INT <= 25) {
@@ -38,10 +38,11 @@ public class AMSHookHelper {
         Class<?> classB2Interface = Class.forName("android.app.IActivityManager");
         Object proxy = Proxy.newProxyInstance(
                 Thread.currentThread().getContextClassLoader(),
-                new Class<?>[]{classB2Interface},
+                new Class<?>[] { classB2Interface },
                 new MockClass1(mInstance));
 
         //把gDefault的mInstance字段，修改为proxy
+        Class class1 = gDefault.getClass();
         RefInvoke.setFieldObject("android.util.Singleton", gDefault, "mInstance", proxy);
     }
 
@@ -60,7 +61,6 @@ public class AMSHookHelper {
         Handler mH = (Handler) RefInvoke.getFieldObject(currentActivityThread, "mH");
 
         //把Handler的mCallback字段，替换为new MockClass2(mH)
-        RefInvoke.setFieldObject(Handler.class,
-                mH, "mCallback", new MockClass2(mH));
+        RefInvoke.setFieldObject(Handler.class, mH, "mCallback", new MockClass2(mH));
     }
 }

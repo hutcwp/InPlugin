@@ -1,10 +1,9 @@
-package com.hutcwp.inplugin.hook;
+package com.hutcwp.inplugin.ams_hook;
 
 import android.content.ComponentName;
 import android.content.Intent;
 import android.util.Log;
 import com.hutcwp.inplugin.StubActivity;
-
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -21,10 +20,13 @@ class MockClass1 implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Log.e(TAG, method.getName());
+
+        Log.e("bao", method.getName());
+
         if ("startActivity".equals(method.getName())) {
             // 只拦截这个方法
             // 替换参数, 任你所为;甚至替换原始Activity启动别的Activity偷梁换柱
+
             // 找到参数里面的第一个Intent 对象
             Intent raw;
             int index = 0;
@@ -49,10 +51,12 @@ class MockClass1 implements InvocationHandler {
             // 把我们原始要启动的TargetActivity先存起来
             newIntent.putExtra(AMSHookHelper.EXTRA_TARGET_INTENT, raw);
 
-            Log.i(TAG, "newIntent=" + newIntent.toString());
             // 替换掉Intent, 达到欺骗AMS的目的
             args[index] = newIntent;
-            Log.d(TAG, "hook success");
+
+            Log.d(TAG, "hook success. newIntent = " + newIntent.toString());
+            return method.invoke(mBase, args);
+
         }
 
         return method.invoke(mBase, args);
