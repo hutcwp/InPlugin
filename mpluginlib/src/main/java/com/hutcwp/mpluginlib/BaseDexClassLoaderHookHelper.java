@@ -1,8 +1,6 @@
-package com.hutcwp.inplugin.classloder_hook;
+package com.hutcwp.mpluginlib;
 
-import com.hutcwp.inplugin.RefInvoke;
 import dalvik.system.DexClassLoader;
-
 
 import java.io.File;
 import java.io.IOException;
@@ -48,13 +46,12 @@ public final class BaseDexClassLoaderHookHelper {
 
         List<File> legalFiles = new ArrayList<>();
         legalFiles.add(apkFile);
-
         List<IOException> suppressedExceptions = new ArrayList<>();
 
         Class[] p1 = {List.class, File.class, List.class, ClassLoader.class};
         Object[] v1 = {legalFiles, optDexFile, suppressedExceptions, cl};
         Object[] toAddElementArray = (Object[])
-                RefInvoke.invokeStaticMethod("dalvik.system.DexPathList", "makeDexElements", p1, v1);
+        RefInvoke.invokeStaticMethod("dalvik.system.DexPathList", "makeDexElements", p1, v1);
 
 
         // 把原始的elements复制进去

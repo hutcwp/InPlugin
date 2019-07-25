@@ -1,9 +1,7 @@
-package com.hutcwp.inplugin.ams_hook;
+package com.hutcwp.mpluginlib;
 
 import android.os.Build;
 import android.os.Handler;
-import com.hutcwp.inplugin.RefInvoke;
-
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
@@ -38,7 +36,7 @@ public class AMSHookHelper {
         Class<?> classB2Interface = Class.forName("android.app.IActivityManager");
         Object proxy = Proxy.newProxyInstance(
                 Thread.currentThread().getContextClassLoader(),
-                new Class<?>[] { classB2Interface },
+                new Class<?>[]{classB2Interface},
                 new MockClass1(mInstance));
 
         //把gDefault的mInstance字段，修改为proxy
@@ -55,7 +53,8 @@ public class AMSHookHelper {
     public static void hookActivityThread() throws Exception {
 
         // 先获取到当前的ActivityThread对象
-        Object currentActivityThread = RefInvoke.getStaticFieldObject("android.app.ActivityThread", "sCurrentActivityThread");
+        Object currentActivityThread =
+                RefInvoke.getStaticFieldObject("android.app.ActivityThread", "sCurrentActivityThread");
 
         // 由于ActivityThread一个进程只有一个,我们获取这个对象的mH
         Handler mH = (Handler) RefInvoke.getFieldObject(currentActivityThread, "mH");

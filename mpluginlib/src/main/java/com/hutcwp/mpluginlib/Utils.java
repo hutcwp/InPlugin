@@ -1,4 +1,4 @@
-package com.hutcwp.inplugin;
+package com.hutcwp.mpluginlib;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -10,6 +10,7 @@ import java.io.*;
  * @date 16/3/29
  */
 public class Utils {
+
     /**
      * 把Assets里面得文件复制到 /data/data/files 目录下
      *
@@ -39,6 +40,7 @@ public class Utils {
 
     }
 
+    // --------------------------------------------------------------------------
     private static void closeSilently(Closeable closeable) {
         if (closeable == null) {
             return;

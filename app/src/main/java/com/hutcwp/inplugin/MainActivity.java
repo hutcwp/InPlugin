@@ -1,65 +1,56 @@
 package com.hutcwp.inplugin;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import com.hutcwp.inplugin.ams_hook.AMSHookHelper;
-import com.hutcwp.inplugin.classloder_hook.BaseDexClassLoaderHookHelper;
-
-import java.io.File;
+import com.hutcwp.mpluginlib.AMSHookHelper;
+import com.hutcwp.mpluginlib.PluginManager;
 
 public class MainActivity extends Activity {
-
-    private static final String TAG = "MainActivity";
-
-    private static final String apkName = "plugin1.apk";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+    }
 
-        Button t = new Button(this);
-        t.setText("test button");
+    public void startService1InPlugin1(View view) {
+        try {
+            Intent intent = new Intent();
 
-        setContentView(t);
+            String serviceName = PluginManager.plugins.get(0).packageInfo.packageName + ".TestService1";
+            intent.setClass(this, Class.forName(serviceName));
 
-        Log.d(TAG, "context classloader: " + getApplicationContext().getClassLoader());
-        t.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Intent t = new Intent();
-                    t.setComponent(
-                            new ComponentName("com.hutcwp.plugina",
-                                    "com.hutcwp.plugina.MainActivity"));
+            startService(intent);
 
-                    startActivity(t);
-                } catch (Throwable e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void startActivityInPlugin1(View view) {
+        try {
+            Intent intent = new Intent();
+
+            String activityName = PluginManager.plugins.get(0).packageInfo.packageName + ".PluginActivity";
+            intent.setClass(this, Class.forName(activityName));
+
+            startActivity(intent);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
         try {
-            Utils.extractAssets(newBase, apkName);
-
-            File dexFile = getFileStreamPath(apkName);
-            File optDexFile = getFileStreamPath("plugin1.dex");
-            BaseDexClassLoaderHookHelper.patchClassLoader(getClassLoader(), dexFile, optDexFile);
-
             AMSHookHelper.hookAMN();
             AMSHookHelper.hookActivityThread();
-
-        } catch (Throwable e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

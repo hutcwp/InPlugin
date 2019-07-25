@@ -1,10 +1,8 @@
-package com.hutcwp.inplugin.ams_hook;
+package com.hutcwp.mpluginlib;
 
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
-import com.hutcwp.inplugin.RefInvoke;
-
 
 /**
  * @author weishu

@@ -4,7 +4,7 @@
           package="com.hutcwp.inplugin">
 
     <application
-            android:name=".UPFApplication"
+            android:name=".MyApplication"
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
@@ -12,8 +12,6 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".StubActivity">
-        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -21,6 +19,13 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+
+        <activity android:name="com.hutcwp.plugina.PluginActivity"/>
+
+        <activity android:name="com.hutcwp.inplugin.StubActivity"/>
+        <activity android:name="com.hutcwp.plugina.MainActivity"/>
+        <activity android:name="com.hutcwp.plugina.Main2Activity"/>
     </application>
 
 </manifest>

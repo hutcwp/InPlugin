@@ -1,9 +1,8 @@
-package com.hutcwp.inplugin.ams_hook;
+package com.hutcwp.mpluginlib;
 
 import android.content.ComponentName;
 import android.content.Intent;
 import android.util.Log;
-import com.hutcwp.inplugin.StubActivity;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -45,7 +44,7 @@ class MockClass1 implements InvocationHandler {
             String stubPackage = "com.hutcwp.inplugin";
 
             // 这里我们把启动的Activity临时替换为 StubActivity
-            ComponentName componentName = new ComponentName(stubPackage, StubActivity.class.getName());
+            ComponentName componentName = new ComponentName(stubPackage, "com.hutcwp.inplugin.StubActivity");
             newIntent.setComponent(componentName);
 
             // 把我们原始要启动的TargetActivity先存起来
