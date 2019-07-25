@@ -1,4 +1,4 @@
-package com.hutcwp.mpluginlib;
+package com.hutcwp.mpluginlib.hook;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -7,13 +7,13 @@ import android.util.Log;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-class MockClass1 implements InvocationHandler {
+class ActivityManagerProxyHook implements InvocationHandler {
 
-    private static final String TAG = "MockClass1";
+    private static final String TAG = "ActivityManagerProxyHook";
 
     Object mBase;
 
-    public MockClass1(Object base) {
+    public ActivityManagerProxyHook(Object base) {
         mBase = base;
     }
 

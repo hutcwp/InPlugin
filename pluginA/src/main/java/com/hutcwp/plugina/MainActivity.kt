@@ -10,6 +10,5 @@ class MainActivity : ZeusBaseActivity() {
         super.onCreate(savedInstanceState)
         Log.i("test", "plugin MainActivity onCreate")
         setContentView(R.layout.activity_main_plugin)
-        val pluginLayout = resources.getLayout(R.layout.activity_main_plugin)
     }
 }

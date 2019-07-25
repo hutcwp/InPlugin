@@ -1,18 +1,19 @@
-package com.hutcwp.mpluginlib;
+package com.hutcwp.mpluginlib.hook;
 
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import com.hutcwp.mpluginlib.RefInvoke;
 
 /**
  * @author weishu
  * @date 16/1/7
  */
-/* package */ class MockClass2 implements Handler.Callback {
+/* package */ class HandlerCallbackHook implements Handler.Callback {
 
     Handler mBase;
 
-    public MockClass2(Handler base) {
+    public HandlerCallbackHook(Handler base) {
         mBase = base;
     }
 
