@@ -5,8 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import com.hutcwp.mpluginlib.hook.AMSHookHelper;
 import com.hutcwp.mpluginlib.PluginManager;
+import com.hutcwp.mpluginlib.hook.AMSHookHelper;
+import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.runtime.Permission;
+
+import java.util.List;
 
 public class MainActivity extends Activity {
 
@@ -14,17 +19,31 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        AndPermission.with(this)
+                .runtime()
+                .permission(Permission.Group.STORAGE)
+                .onGranted(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> permissions) {
+                        // Storage permission are allowed.
+                    }
+                })
+                .onDenied(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> permissions) {
+                        // Storage permission are not allowed.
+                    }
+                })
+                .start();
+
     }
 
     public void startService1InPlugin1(View view) {
         try {
             Intent intent = new Intent();
-
             String serviceName = PluginManager.plugins.get(0).packageInfo.packageName + ".TestService1";
             intent.setClass(this, Class.forName(serviceName));
-
             startService(intent);
-
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }

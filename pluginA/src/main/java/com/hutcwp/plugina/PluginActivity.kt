@@ -15,7 +15,7 @@ class PluginActivity : Activity() {
         super.onCreate(savedInstanceState)
 
         val btn = Button(this)
-        btn.text = "button create"
+        btn.text = "button create a"
         setContentView(btn)
 
         btn.setOnClickListener {

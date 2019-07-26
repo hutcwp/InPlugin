@@ -30,11 +30,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-
-    implementation project(path: ':mpluginlib', configuration: 'default')
+    implementation project(path: ':mpluginlib')
 }
 
 assemble.doLast {
@@ -45,11 +41,38 @@ assemble.doLast {
             variant.outputs.each { output ->
                 File originFile = output.outputFile
                 println originFile.absolutePath
+                def pluginName = "plugin1.apk"
                 copy {
                     println 'copy task...'
                     from originFile
                     into "$rootDir/app/src/main/assets"
-                    rename(originFile.name, "plugin1.apk")
+                    rename(originFile.name, pluginName)
+                }
+
+                println "Deploying plugin so"
+                def adb = null
+                def localProperties = new File(rootDir, "local.properties")
+                if (localProperties.exists()) {
+                    Properties properties = new Properties()
+                    localProperties.withInputStream {
+                        instr -> properties.load(instr)
+                    }
+
+                    def sdkDir = properties.getProperty('sdk.dir')
+                    adb = "$sdkDir/platform-tools/adb"
+                }
+
+                if (adb != null) {
+                    try {
+                        exec {
+                            commandLine "$adb", "push", originFile, "/sdcard/mplugins/" + pluginName
+                        }
+                    } catch (Exception e) {
+                        exec {
+                            commandLine "$adb", "mkdir", "/sdcard/mplugins/"
+                            commandLine "$adb", "push", originFile, "/sdcard/mplugins/" + pluginName
+                        }
+                    }
                 }
             }
         }

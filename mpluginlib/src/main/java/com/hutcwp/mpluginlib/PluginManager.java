@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -29,26 +31,43 @@ public class PluginManager {
         mNowResources = mBaseContext.getResources();
 
         try {
-            AssetManager assetManager = application.getAssets();
-            String[] paths = assetManager.list("");
+//            AssetManager assetManager = application.getAssets();
+//            String[] paths = assetManager.list("");
 
-            ArrayList<String> pluginPaths = new ArrayList<String>();
-            for (String path : paths) {
-                if (path.endsWith(".apk")) {
-                    String apkName = path;
-                    String dexName = apkName.replace(".apk", ".dex");
-
-                    Utils.extractAssets(mBaseContext, apkName);
-                    mergeDexs(apkName, dexName);
-
-                    PluginItem item = generatePluginItem(apkName);
-                    plugins.add(item);
-
-                    pluginPaths.add(item.pluginPath);
+            // 从存储卡/mlugins/路径下读取
+            String[] paths = new String[]{};
+            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                String dirPath = Environment.getExternalStorageDirectory().getAbsoluteFile() + File.separator
+                        + "mplugins/";
+                File dir = new File(dirPath);
+                Log.i("test", "dirPath = " + dirPath);
+                if (dir.exists() && dir.isDirectory()) {
+                    paths = dir.list();
+                    for (int i = 0; i < paths.length; i++) {
+                        Log.i("test", "dir list path = " + dir.list()[i]);
+                    }
                 }
-            }
 
-            reloadInstalledPluginResources(pluginPaths);
+
+                ArrayList<String> pluginPaths = new ArrayList<String>();
+                for (String path : paths) {
+                    if (path.endsWith(".apk")) {
+                        Log.i("test", "parse apk plugin " + path);
+                        String apkName = path;
+                        String dexName = apkName.replace(".apk", ".dex");
+
+                        Utils.extractAssets(mBaseContext, apkName);
+                        mergeDexs(apkName, dexName);
+
+                        PluginItem item = generatePluginItem(apkName);
+                        plugins.add(item);
+
+                        pluginPaths.add(item.pluginPath);
+                    }
+                }
+
+                reloadInstalledPluginResources(pluginPaths);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

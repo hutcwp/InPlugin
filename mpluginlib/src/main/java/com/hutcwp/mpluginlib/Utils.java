@@ -2,6 +2,7 @@ package com.hutcwp.mpluginlib;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.os.Environment;
 
 import java.io.*;
 
@@ -18,11 +19,14 @@ public class Utils {
      * @param sourceName
      */
     public static void extractAssets(Context context, String sourceName) {
-        AssetManager am = context.getAssets();
+//        AssetManager am = context.getAssets();
         InputStream is = null;
         FileOutputStream fos = null;
         try {
-            is = am.open(sourceName);
+            String dirPath = Environment.getExternalStorageDirectory().getAbsoluteFile() + File.separator
+                    + "mplugins/";
+            File file = new File(dirPath + sourceName);
+            is = new FileInputStream(file);
             File extractFile = context.getFileStreamPath(sourceName);
             fos = new FileOutputStream(extractFile);
             byte[] buffer = new byte[1024];
@@ -37,7 +41,6 @@ public class Utils {
             closeSilently(is);
             closeSilently(fos);
         }
-
     }
 
     // --------------------------------------------------------------------------
