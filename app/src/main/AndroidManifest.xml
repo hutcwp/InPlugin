@@ -26,8 +26,8 @@
         <!--<activity android:name="com.hutcwp.plugina.PluginActivity"/>-->
 
         <activity android:name="com.hutcwp.inplugin.StubActivity"/>
-        <activity android:name="com.hutcwp.plugina.MainActivity"/>
-        <activity android:name="com.hutcwp.plugina.Main2Activity"/>
+        <activity android:name="com.hutcwp.plugina.PluginActivity"/>
+        <activity android:name="com.hutcwp.pluginb.PluginBActivity"/>
     </application>
 
 </manifest>

@@ -35,6 +35,7 @@ public class MainActivity extends Activity {
                     }
                 })
                 .start();
+        getResources();
 
     }
 
@@ -63,12 +64,26 @@ public class MainActivity extends Activity {
         }
     }
 
+    public void startActivityInPluginB(View view) {
+        try {
+            Intent intent = new Intent();
+
+            String activityName = PluginManager.plugins.get(1).packageInfo.packageName + ".PluginBActivity";
+            intent.setClass(this, Class.forName(activityName));
+
+            startActivity(intent);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
         try {
-            AMSHookHelper.hookAMN();
-            AMSHookHelper.hookActivityThread();
+//            AMSHookHelper.hookAMN();
+//            AMSHookHelper.hookActivityThread();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -104,6 +104,7 @@ public class PluginManager {
 
             for (String pluginPath : pluginPaths) {
                 addAssetPath.invoke(assetManager, pluginPath);
+                Log.i("test", "addAssetPath path = " + pluginPath);
             }
 
 
@@ -121,6 +122,7 @@ public class PluginManager {
             //如果是activity动态加载插件，则需要把activity的mTheme对象也设置为null
             RefInvoke.setFieldObject(mBaseContext, "mTheme", null);
         } catch (Throwable e) {
+            Log.e("test", "reloadInstalledPluginResources error.", e);
             e.printStackTrace();
         }
     }

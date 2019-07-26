@@ -1,11 +1,14 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+
+
 android {
     compileSdkVersion 28
 
+
     defaultConfig {
-        applicationId "com.hutcwp.plugina"
+        applicationId "com.hutcwp.pluginb"
         minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
@@ -22,6 +25,10 @@ android {
         }
     }
 
+
+    aaptOptions {
+        additionalParameters '--allow-reserved-package-id', '--package-id', '0x55'
+    }
 }
 
 dependencies {
@@ -40,13 +47,13 @@ assemble.doLast {
             variant.outputs.each { output ->
                 File originFile = output.outputFile
                 println originFile.absolutePath
-                def pluginName = "plugin1.apk"
-                copy {
-                    println 'copy task...'
-                    from originFile
-                    into "$rootDir/app/src/main/assets"
-                    rename(originFile.name, pluginName)
-                }
+                def pluginName = "pluginb.apk"
+//                copy {
+//                    println 'copy task...'
+//                    from originFile
+//                    into "$rootDir/app/src/main/assets"
+//                    rename(originFile.name, pluginName)
+//                }
 
                 println "Deploying plugin so"
                 def adb = null

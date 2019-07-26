@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/mpluginlib" />
             <option value="$PROJECT_DIR$/pluginA" />
+            <option value="$PROJECT_DIR$/pluginb" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
