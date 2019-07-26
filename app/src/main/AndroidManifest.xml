@@ -21,7 +21,7 @@
         </activity>
 
 
-        <activity android:name="com.hutcwp.plugina.PluginActivity"/>
+        <!--<activity android:name="com.hutcwp.plugina.PluginActivity"/>-->
 
         <activity android:name="com.hutcwp.inplugin.StubActivity"/>
         <activity android:name="com.hutcwp.plugina.MainActivity"/>

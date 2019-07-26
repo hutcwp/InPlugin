@@ -20,7 +20,7 @@ class ActivityManagerProxyHook implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
-        Log.e("bao", method.getName());
+        Log.e("test", method.getName());
 
         if ("startActivity".equals(method.getName())) {
             // 只拦截这个方法
