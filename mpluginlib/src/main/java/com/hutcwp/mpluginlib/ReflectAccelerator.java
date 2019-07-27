@@ -16,10 +16,13 @@
 
 package com.hutcwp.mpluginlib;
 
+import android.app.Activity;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.os.Build;
 import android.util.ArrayMap;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -173,6 +176,38 @@ public class ReflectAccelerator {
 
             return null;
         }
+    }
+
+    public static void resetResourcesAndTheme(Activity activity, int themeId) {
+        AssetManager newAssetManager = activity.getApplication().getAssets();
+        Resources resources = activity.getResources();
+
+        if (null == newAssetManager) {
+            Log.i(TAG, "resetResourcesAndTheme but application AssetManager is null");
+            return;
+        }
+        // Set the activity resources assets to the application one
+        try {
+            Field mResourcesImpl = Resources.class.getDeclaredField("mResourcesImpl");
+            mResourcesImpl.setAccessible(true);
+            Object resourceImpl = mResourcesImpl.get(resources);
+            Field implAssets = resourceImpl.getClass().getDeclaredField("mAssets");
+            implAssets.setAccessible(true);
+            implAssets.set(resourceImpl, newAssetManager);
+        } catch (Throwable e) {
+            android.util.Log.e("Small", "Failed to update resources for activity " + activity, e);
+        }
+
+        // Reset the theme
+        try {
+            Field mt = ContextThemeWrapper.class.getDeclaredField("mTheme");
+            mt.setAccessible(true);
+            mt.set(activity, null);
+        } catch (Throwable e) {
+            android.util.Log.e("Small", "Failed to update existing theme for activity " + activity, e);
+        }
+
+        activity.setTheme(themeId);
     }
 
 

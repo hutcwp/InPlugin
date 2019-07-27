@@ -179,10 +179,9 @@ public class PluginManager {
 
         private void applyActivityInfo(Activity activity, ActivityInfo ai) {
             Log.i("test", "applyActivityInfo");
-            // Apply window attributes
-            // if (Build.VERSION.SDK_INT >= 28) {
-            //     ReflectAccelerator.resetResourcesAndTheme(activity, ai.getThemeResource());
-            // }
+            if (Build.VERSION.SDK_INT >= 28) {
+                ReflectAccelerator.resetResourcesAndTheme(activity, ai.getThemeResource());
+            }
 
             Window window = activity.getWindow();
             window.setSoftInputMode(ai.softInputMode);
