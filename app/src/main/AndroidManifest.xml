@@ -25,8 +25,7 @@
 
         <!--<activity android:name="com.hutcwp.plugina.PluginActivity"/>-->
 
-        <activity android:name="com.hutcwp.inplugin.StubActivity"
-                  android:screenOrientation="landscape">
+        <activity android:name="com.hutcwp.inplugin.StubActivity">
 
         </activity>
 

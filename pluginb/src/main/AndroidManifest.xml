@@ -12,7 +12,7 @@
         <activity android:name=".PluginBMainActivity">
         </activity>
         <activity android:name=".PluginBActivity"
-                  android:screenOrientation="landscape">
+                  android:screenOrientation="portrait">
         </activity>
     </application>
 

@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import com.hutcwp.mpluginlib.PluginManager;
 import com.hutcwp.mpluginlib.RefInvoke;
 
 import java.lang.reflect.Field;
@@ -44,7 +45,6 @@ import java.util.List;
 
     private void handleLaunchActivity(Message msg) {
         // 这里简单起见,直接取出TargetActivity;
-
         Object obj = msg.obj;
 
         // 把替身恢复成真身
@@ -62,21 +62,21 @@ import java.util.List;
             Field field = cls.getDeclaredField(fieldName);
             field.setAccessible(true);
 
-            ActivityInfo info = (ActivityInfo) field.get(r);
-            info.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
-            field.set(r, info);
+            ActivityInfo[] activities = PluginManager.plugins.get(0).pluginParser.getPackageInfo().activities;
+            for (ActivityInfo ai : activities) {
+                if (ai.name.equals(target.getComponent().getClassName())) {
+                    field.set(r, ai);
+                    Log.e("test", "find out activityInfo , name is " + ai.name);
+                    break;
+                }
+            }
 
             ActivityInfo activityInfo = (ActivityInfo) RefInvoke.getFieldObject(r.getClass(), r, fieldName);
-            Log.i("test", "activituInfo .get =" + activityInfo.screenOrientation);
-
+            Log.e("test", "finally activityInfo.is " + activityInfo.name);
         } catch (Exception e) {
             //
             Log.e("test", "get activity info  error ", e);
         }
-
-
-//        activityInfo.screenOrientation = 0;
-
     }
 
     /**

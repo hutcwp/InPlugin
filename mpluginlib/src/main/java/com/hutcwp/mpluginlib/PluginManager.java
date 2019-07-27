@@ -1,11 +1,17 @@
 package com.hutcwp.mpluginlib;
 
+import android.app.Activity;
 import android.app.Application;
+import android.app.Instrumentation;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
+import android.view.Window;
+import com.hutcwp.mpluginlib.plugin.PluginParser;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -69,7 +75,26 @@ public class PluginManager {
                 reloadInstalledPluginResources(pluginPaths);
             }
 
+            hookInstrumentation();
+
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void hookInstrumentation() {
+        try {
+            // 先获取到当前的ActivityThread对象
+            Object currentActivityThread =
+                    RefInvoke.getStaticFieldObject("android.app.ActivityThread", "sCurrentActivityThread");
+            Class sActivitythread_class = Class.forName("android.app.ActivityThread");
+            Instrumentation host = (Instrumentation) RefInvoke.getFieldObject(currentActivityThread,
+                    "mInstrumentation");
+            InstrumentationWrapper mInstrumentationWrapper = new InstrumentationWrapper(host);
+            RefInvoke.setFieldObject(currentActivityThread.getClass(), currentActivityThread,
+                    "mInstrumentation", mInstrumentationWrapper);
+        } catch (ClassNotFoundException e) {
+            Log.e("test", "hookInstrumentation error.");
             e.printStackTrace();
         }
     }
@@ -79,6 +104,7 @@ public class PluginManager {
         PluginItem item = new PluginItem();
         item.pluginPath = file.getAbsolutePath();
         item.packageInfo = DLUtils.getPackageInfo(mBaseContext, item.pluginPath);
+        item.pluginParser = PluginParser.parsePackage(file);
 
         return item;
     }
@@ -124,6 +150,43 @@ public class PluginManager {
         } catch (Throwable e) {
             Log.e("test", "reloadInstalledPluginResources error.", e);
             e.printStackTrace();
+        }
+    }
+
+
+    static class InstrumentationWrapper extends Instrumentation {
+        Instrumentation rawInstrumentation;
+
+        public InstrumentationWrapper(Instrumentation rawInstrumentatio) {
+            this.rawInstrumentation = rawInstrumentatio;
+        }
+
+        @Override
+        /** Prepare resources for REAL */
+        public void callActivityOnCreate(Activity activity, android.os.Bundle icicle) {
+            Log.i("test", "callActivityOnCreate");
+            ActivityInfo[] activities = PluginManager.plugins.get(0).pluginParser.getPackageInfo().activities;
+            for (ActivityInfo ai : activities) {
+                if (ai.name.equals(activity.getClass().getName())) {
+                    Log.e("test", "find out activityInfo , name is " + ai.name);
+                    applyActivityInfo(activity, ai);
+                    break;
+                }
+            }
+
+            rawInstrumentation.callActivityOnCreate(activity, icicle);
+        }
+
+        private void applyActivityInfo(Activity activity, ActivityInfo ai) {
+            Log.i("test", "applyActivityInfo");
+            // Apply window attributes
+            // if (Build.VERSION.SDK_INT >= 28) {
+            //     ReflectAccelerator.resetResourcesAndTheme(activity, ai.getThemeResource());
+            // }
+
+            Window window = activity.getWindow();
+            window.setSoftInputMode(ai.softInputMode);
+            activity.setRequestedOrientation(ai.screenOrientation);
         }
     }
 }
