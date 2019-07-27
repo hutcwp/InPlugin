@@ -53,7 +53,7 @@ class ActivityManagerProxyHook implements InvocationHandler {
             // 替换掉Intent, 达到欺骗AMS的目的
             args[index] = newIntent;
 
-            Log.d(TAG, "hook success. newIntent = " + newIntent.toString());
+            Log.d("test", "hook success. newIntent = " + newIntent.toString());
             return method.invoke(mBase, args);
 
         }

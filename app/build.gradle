@@ -20,6 +20,10 @@ android {
 //            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 //        }
 //    }
+
+    aaptOptions {
+        additionalParameters '--allow-reserved-package-id', '--package-id', '0x7f'
+    }
 }
 
 dependencies {

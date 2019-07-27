@@ -22,6 +22,10 @@ android {
         }
     }
 
+    aaptOptions {
+        additionalParameters '--allow-reserved-package-id', '--package-id', '0x50'
+    }
+
 }
 
 dependencies {
@@ -41,12 +45,12 @@ assemble.doLast {
                 File originFile = output.outputFile
                 println originFile.absolutePath
                 def pluginName = "plugin1.apk"
-                copy {
-                    println 'copy task...'
-                    from originFile
-                    into "$rootDir/app/src/main/assets"
-                    rename(originFile.name, pluginName)
-                }
+//                copy {
+//                    println 'copy task...'
+//                    from originFile
+//                    into "$rootDir/app/src/main/assets"
+//                    rename(originFile.name, pluginName)
+//                }
 
                 println "Deploying plugin so"
                 def adb = null

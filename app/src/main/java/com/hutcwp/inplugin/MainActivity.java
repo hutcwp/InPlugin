@@ -54,7 +54,7 @@ public class MainActivity extends Activity {
         try {
             Intent intent = new Intent();
 
-            String activityName = PluginManager.plugins.get(0).packageInfo.packageName + ".PluginActivity";
+            String activityName = PluginManager.plugins.get(1).packageInfo.packageName + ".PluginActivity";
             intent.setClass(this, Class.forName(activityName));
 
             startActivity(intent);
@@ -68,7 +68,7 @@ public class MainActivity extends Activity {
         try {
             Intent intent = new Intent();
 
-            String activityName = PluginManager.plugins.get(1).packageInfo.packageName + ".PluginBActivity";
+            String activityName = PluginManager.plugins.get(0).packageInfo.packageName + ".PluginBActivity";
             intent.setClass(this, Class.forName(activityName));
 
             startActivity(intent);
@@ -82,8 +82,8 @@ public class MainActivity extends Activity {
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
         try {
-//            AMSHookHelper.hookAMN();
-//            AMSHookHelper.hookActivityThread();
+            AMSHookHelper.hookAMN();
+            AMSHookHelper.hookActivityThread();
         } catch (Exception e) {
             e.printStackTrace();
         }
