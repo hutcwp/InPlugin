@@ -7,6 +7,7 @@ import android.os.Message;
 import android.util.Log;
 import com.hutcwp.mpluginlib.RefInvoke;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 /**
@@ -23,7 +24,7 @@ import java.util.List;
 
     @Override
     public boolean handleMessage(Message msg) {
-        Log.i("test", "msg.what=" + msg.what);
+//        Log.i("test", "msg.what=" + msg.what);
         switch (msg.what) {
             // ActivityThread里面 "LAUNCH_ACTIVITY" 这个字段的值是100
             // 本来使用反射的方式获取最好, 这里为了简便直接使用硬编码
@@ -32,6 +33,8 @@ import java.util.List;
                 break;
             case 159:   //for API 28
                 handleActivity(msg);
+                break;
+            default:
                 break;
         }
 
@@ -51,6 +54,29 @@ import java.util.List;
         Log.e("test", "raw = " + raw.toString());
         Log.e("test", "target = " + target.toString());
         raw.setComponent(target.getComponent());
+
+        try {
+            Object/*ActivityClientRecord*/ r = msg.obj;
+            Class cls = r.getClass();
+            String fieldName = "activityInfo";
+            Field field = cls.getDeclaredField(fieldName);
+            field.setAccessible(true);
+
+            ActivityInfo info = (ActivityInfo) field.get(r);
+            info.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+            field.set(r, info);
+
+            ActivityInfo activityInfo = (ActivityInfo) RefInvoke.getFieldObject(r.getClass(), r, fieldName);
+            Log.i("test", "activituInfo .get =" + activityInfo.screenOrientation);
+
+        } catch (Exception e) {
+            //
+            Log.e("test", "get activity info  error ", e);
+        }
+
+
+//        activityInfo.screenOrientation = 0;
+
     }
 
     /**
@@ -75,8 +101,13 @@ import java.util.List;
                 // replace ai
                 ActivityInfo activityInfo = (ActivityInfo) RefInvoke.getFieldObject(
                         object, "mInfo");
-                activityInfo.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+                Log.i("test", "default screenOrientation is " + activityInfo.screenOrientation);
+                activityInfo.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 
+
+                ActivityInfo activityInfo2 = (ActivityInfo) RefInvoke.getFieldObject(object, "mInfo");
+                Log.i("test", " after default screenOrientation is " + activityInfo2.screenOrientation);
+//                RefInvoke.setFieldObject(object, "mInfo", activityInfo);
             }
         }
     }
