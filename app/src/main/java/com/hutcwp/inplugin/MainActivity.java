@@ -53,12 +53,9 @@ public class MainActivity extends Activity {
     public void startActivityInPlugin1(View view) {
         try {
             Intent intent = new Intent();
-
-            String activityName = PluginManager.plugins.get(1).packageInfo.packageName + ".PluginActivity";
+            String activityName = "com.hutcwp.plugina.PluginActivity.PluginActivity";
             intent.setClass(this, Class.forName(activityName));
-
             startActivity(intent);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,12 +64,9 @@ public class MainActivity extends Activity {
     public void startActivityInPluginB(View view) {
         try {
             Intent intent = new Intent();
-
-            String activityName = PluginManager.plugins.get(0).packageInfo.packageName + ".PluginBActivity";
+            String activityName = "com.hutcwp.pluginb.PluginBActivity";
             intent.setClass(this, Class.forName(activityName));
-
             startActivity(intent);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
