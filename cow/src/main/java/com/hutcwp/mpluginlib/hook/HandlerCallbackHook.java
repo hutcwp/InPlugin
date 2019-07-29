@@ -5,8 +5,8 @@ import android.content.pm.ActivityInfo;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import com.hutcwp.mpluginlib.PluginManager;
-import com.hutcwp.mpluginlib.RefInvoke;
+import com.hutcwp.mpluginlib.plugin.PluginManager;
+import com.hutcwp.mpluginlib.util.RefInvoke;
 
 import java.lang.reflect.Field;
 import java.util.List;

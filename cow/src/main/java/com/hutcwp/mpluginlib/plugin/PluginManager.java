@@ -1,24 +1,83 @@
-package com.hutcwp.mpluginlib;
+package com.hutcwp.mpluginlib.plugin;
 
-import android.app.Activity;
 import android.app.Application;
-import android.app.Instrumentation;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
-import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
-import android.view.Window;
-import com.hutcwp.mpluginlib.plugin.PluginParser;
+import com.hutcwp.mpluginlib.hook.BaseDexClassLoaderHookHelper;
+import com.hutcwp.mpluginlib.luancher.PluginLauncher;
+import com.hutcwp.mpluginlib.util.DLUtils;
+import com.hutcwp.mpluginlib.util.RefInvoke;
+import com.hutcwp.mpluginlib.util.Utils;
 
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PluginManager {
+public enum PluginManager {
+
+    INSTANCE;
+
+    private List<PluginLauncher> mPluginLaunchers = null;
+
+    private Context mApplicationContext;
+
+    /**
+     * 注册加载器
+     *
+     * @param launcher
+     */
+    public void registerLauncher(PluginLauncher launcher) {
+        if (mPluginLaunchers == null) {
+            mPluginLaunchers = new ArrayList<>();
+        }
+        mPluginLaunchers.add(launcher);
+    }
+
+    /**
+     * 初始化加载器
+     *
+     * @param context applicationContext
+     */
+    public void initLaunchers(Application context) {
+        mApplicationContext = context;
+        if (mPluginLaunchers == null) {
+            return;
+        }
+
+        for (PluginLauncher launcher : mPluginLaunchers) {
+            launcher.preSetUp(context);
+        }
+    }
+
+    public boolean setup(Context context) {
+        setupLaunchers(context);
+        return true;
+    }
+
+    public void loadSetupPlugins() {
+
+    }
+
+    /**
+     * 启动初始化加载器
+     *
+     * @param context applicationContext
+     */
+    public void setupLaunchers(Context context) {
+        if (mPluginLaunchers == null) {
+            return;
+        }
+
+        for (PluginLauncher launcher : mPluginLaunchers) {
+            launcher.setUp(context);
+        }
+    }
+
+
     public final static List<PluginItem> plugins = new ArrayList<PluginItem>();
 
     //正在使用的Resources
@@ -75,29 +134,12 @@ public class PluginManager {
                 reloadInstalledPluginResources(pluginPaths);
             }
 
-            hookInstrumentation();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static void hookInstrumentation() {
-        try {
-            // 先获取到当前的ActivityThread对象
-            Object currentActivityThread =
-                    RefInvoke.getStaticFieldObject("android.app.ActivityThread", "sCurrentActivityThread");
-            Class sActivitythread_class = Class.forName("android.app.ActivityThread");
-            Instrumentation host = (Instrumentation) RefInvoke.getFieldObject(currentActivityThread,
-                    "mInstrumentation");
-            InstrumentationWrapper mInstrumentationWrapper = new InstrumentationWrapper(host);
-            RefInvoke.setFieldObject(currentActivityThread.getClass(), currentActivityThread,
-                    "mInstrumentation", mInstrumentationWrapper);
-        } catch (ClassNotFoundException e) {
-            Log.e("test", "hookInstrumentation error.");
-            e.printStackTrace();
-        }
-    }
 
     private static PluginItem generatePluginItem(String apkName) {
         File file = mBaseContext.getFileStreamPath(apkName);
@@ -154,38 +196,4 @@ public class PluginManager {
     }
 
 
-    static class InstrumentationWrapper extends Instrumentation {
-        Instrumentation rawInstrumentation;
-
-        public InstrumentationWrapper(Instrumentation rawInstrumentatio) {
-            this.rawInstrumentation = rawInstrumentatio;
-        }
-
-        @Override
-        /** Prepare resources for REAL */
-        public void callActivityOnCreate(Activity activity, android.os.Bundle icicle) {
-            Log.i("test", "callActivityOnCreate");
-            ActivityInfo[] activities = PluginManager.plugins.get(0).pluginParser.getPackageInfo().activities;
-            for (ActivityInfo ai : activities) {
-                if (ai.name.equals(activity.getClass().getName())) {
-                    Log.e("test", "find out activityInfo , name is " + ai.name);
-                    applyActivityInfo(activity, ai);
-                    break;
-                }
-            }
-
-            rawInstrumentation.callActivityOnCreate(activity, icicle);
-        }
-
-        private void applyActivityInfo(Activity activity, ActivityInfo ai) {
-            Log.i("test", "applyActivityInfo");
-            if (Build.VERSION.SDK_INT >= 28) {
-                ReflectAccelerator.resetResourcesAndTheme(activity, ai.getThemeResource());
-            }
-
-            Window window = activity.getWindow();
-            window.setSoftInputMode(ai.softInputMode);
-            activity.setRequestedOrientation(ai.screenOrientation);
-        }
-    }
 }

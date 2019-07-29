@@ -14,8 +14,7 @@ import android.os.Build;
 import android.os.PatternMatcher;
 import android.util.AttributeSet;
 import android.util.Log;
-import com.hutcwp.mpluginlib.PluginManager;
-import com.hutcwp.mpluginlib.ReflectAccelerator;
+import com.hutcwp.mpluginlib.util.ReflectAccelerator;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedReader;

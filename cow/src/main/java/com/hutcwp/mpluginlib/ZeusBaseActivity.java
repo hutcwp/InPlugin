@@ -2,6 +2,7 @@ package com.hutcwp.mpluginlib;
 
 import android.app.Activity;
 import android.content.res.Resources;
+import com.hutcwp.mpluginlib.plugin.PluginManager;
 
 /**
  * 基础的activity

@@ -1,5 +1,6 @@
-package com.hutcwp.mpluginlib;
+package com.hutcwp.mpluginlib.hook;
 
+import com.hutcwp.mpluginlib.util.RefInvoke;
 import dalvik.system.DexClassLoader;
 
 import java.io.File;
@@ -15,9 +16,10 @@ import java.util.List;
  * 查看源码得知,这个BaseDexClassLoader加载代码根据一个叫做
  * dexElements的数组进行, 因此我们把包含代码的dex文件插入这个数组
  * 系统的classLoader就能帮助我们找到这个类
- *
+ * <p>
  * 这个类用来进行对于BaseDexClassLoader的Hook
  * 类名太长, 不要吐槽.
+ *
  * @author weishu
  * @date 16/3/28
  */
@@ -44,6 +46,9 @@ public final class BaseDexClassLoaderHookHelper {
         //
         // Object[] toAddElementArray = new Object[] { o };
 
+        /**
+         * 上面代码不支持8.0+ 改为下面的代码
+         */
         List<File> legalFiles = new ArrayList<>();
         legalFiles.add(apkFile);
         List<IOException> suppressedExceptions = new ArrayList<>();
@@ -51,8 +56,7 @@ public final class BaseDexClassLoaderHookHelper {
         Class[] p1 = {List.class, File.class, List.class, ClassLoader.class};
         Object[] v1 = {legalFiles, optDexFile, suppressedExceptions, cl};
         Object[] toAddElementArray = (Object[])
-        RefInvoke.invokeStaticMethod("dalvik.system.DexPathList", "makeDexElements", p1, v1);
-
+                RefInvoke.invokeStaticMethod("dalvik.system.DexPathList", "makeDexElements", p1, v1);
 
         // 把原始的elements复制进去
         System.arraycopy(dexElements, 0, newElements, 0, dexElements.length);

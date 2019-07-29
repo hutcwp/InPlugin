@@ -1,4 +1,4 @@
-package com.hutcwp.mpluginlib;
+package com.hutcwp.mpluginlib.plugin;
 
 import android.content.pm.PackageInfo;
 import com.hutcwp.mpluginlib.plugin.PluginParser;

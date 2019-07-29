@@ -2,7 +2,7 @@ package com.hutcwp.mpluginlib.hook;
 
 import android.os.Build;
 import android.os.Handler;
-import com.hutcwp.mpluginlib.RefInvoke;
+import com.hutcwp.mpluginlib.util.RefInvoke;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;

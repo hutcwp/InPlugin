@@ -1,7 +1,6 @@
-package com.hutcwp.mpluginlib;
+package com.hutcwp.mpluginlib.util;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.os.Environment;
 
 import java.io.*;
