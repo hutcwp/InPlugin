@@ -1,12 +1,12 @@
-package com.hutcwp.mpluginlib.hook;
+package com.hutcwp.cow.hook;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import com.hutcwp.mpluginlib.plugin.PluginManager;
-import com.hutcwp.mpluginlib.util.RefInvoke;
+import com.hutcwp.cow.plugin.PluginManager;
+import com.hutcwp.cow.util.RefInvoke;
 
 import java.lang.reflect.Field;
 import java.util.List;

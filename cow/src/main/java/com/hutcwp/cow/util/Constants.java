@@ -1,4 +1,4 @@
-package com.hutcwp.mpluginlib.util;
+package com.hutcwp.cow.util;
 
 /**
  * 用来存储常量

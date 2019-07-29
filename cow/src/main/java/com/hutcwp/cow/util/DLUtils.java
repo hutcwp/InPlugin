@@ -1,4 +1,4 @@
-package com.hutcwp.mpluginlib.util;
+package com.hutcwp.cow.util;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;

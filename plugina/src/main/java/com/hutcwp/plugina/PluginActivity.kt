@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
-import com.hutcwp.mpluginlib.ZeusBaseActivity
+import com.hutcwp.cow.ZeusBaseActivity
 
 
 class PluginActivity : ZeusBaseActivity() {

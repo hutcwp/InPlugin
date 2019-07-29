@@ -3,7 +3,7 @@ package com.hutcwp.inplugin
 import android.app.Application
 import android.content.Context
 import android.widget.Toast
-import com.hutcwp.mpluginlib.Cow
+import com.hutcwp.cow.Cow
 import com.yanzhenjie.permission.AndPermission
 import com.yanzhenjie.permission.runtime.Permission
 

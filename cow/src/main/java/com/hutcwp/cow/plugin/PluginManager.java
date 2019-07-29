@@ -1,4 +1,4 @@
-package com.hutcwp.mpluginlib.plugin;
+package com.hutcwp.cow.plugin;
 
 import android.app.Application;
 import android.content.Context;
@@ -6,11 +6,11 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.Environment;
 import android.util.Log;
-import com.hutcwp.mpluginlib.hook.BaseDexClassLoaderHookHelper;
-import com.hutcwp.mpluginlib.luancher.PluginLauncher;
-import com.hutcwp.mpluginlib.util.DLUtils;
-import com.hutcwp.mpluginlib.util.RefInvoke;
-import com.hutcwp.mpluginlib.util.Utils;
+import com.hutcwp.cow.luancher.PluginLauncher;
+import com.hutcwp.cow.util.DLUtils;
+import com.hutcwp.cow.hook.BaseDexClassLoaderHookHelper;
+import com.hutcwp.cow.util.RefInvoke;
+import com.hutcwp.cow.util.Utils;
 
 import java.io.File;
 import java.lang.reflect.Method;

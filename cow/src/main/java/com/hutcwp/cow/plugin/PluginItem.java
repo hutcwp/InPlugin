@@ -1,7 +1,6 @@
-package com.hutcwp.mpluginlib.plugin;
+package com.hutcwp.cow.plugin;
 
 import android.content.pm.PackageInfo;
-import com.hutcwp.mpluginlib.plugin.PluginParser;
 
 public class PluginItem {
     public PackageInfo packageInfo;

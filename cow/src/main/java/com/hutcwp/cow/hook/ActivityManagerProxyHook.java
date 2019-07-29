@@ -1,4 +1,4 @@
-package com.hutcwp.mpluginlib.hook;
+package com.hutcwp.cow.hook;
 
 import android.content.ComponentName;
 import android.content.Intent;

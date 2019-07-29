@@ -1,6 +1,6 @@
-package com.hutcwp.mpluginlib.hook;
+package com.hutcwp.cow.hook;
 
-import com.hutcwp.mpluginlib.util.RefInvoke;
+import com.hutcwp.cow.util.RefInvoke;
 import dalvik.system.DexClassLoader;
 
 import java.io.File;

@@ -1,8 +1,8 @@
-package com.hutcwp.mpluginlib;
+package com.hutcwp.cow;
 
 import android.app.Activity;
 import android.content.res.Resources;
-import com.hutcwp.mpluginlib.plugin.PluginManager;
+import com.hutcwp.cow.plugin.PluginManager;
 
 /**
  * 基础的activity

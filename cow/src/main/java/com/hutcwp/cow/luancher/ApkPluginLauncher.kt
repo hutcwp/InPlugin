@@ -1,4 +1,4 @@
-package com.hutcwp.mpluginlib.luancher
+package com.hutcwp.cow.luancher
 
 import android.app.Activity
 import android.app.Application
@@ -7,9 +7,9 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.util.Log
-import com.hutcwp.mpluginlib.plugin.PluginManager
-import com.hutcwp.mpluginlib.util.RefInvoke
-import com.hutcwp.mpluginlib.util.ReflectAccelerator
+import com.hutcwp.cow.plugin.PluginManager
+import com.hutcwp.cow.util.RefInvoke
+import com.hutcwp.cow.util.ReflectAccelerator
 
 /**
  *

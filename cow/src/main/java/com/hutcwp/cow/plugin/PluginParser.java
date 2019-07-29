@@ -1,4 +1,4 @@
-package com.hutcwp.mpluginlib.plugin;
+package com.hutcwp.cow.plugin;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +14,7 @@ import android.os.Build;
 import android.os.PatternMatcher;
 import android.util.AttributeSet;
 import android.util.Log;
-import com.hutcwp.mpluginlib.util.ReflectAccelerator;
+import com.hutcwp.cow.util.ReflectAccelerator;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedReader;

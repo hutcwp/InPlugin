@@ -1,4 +1,4 @@
-package com.hutcwp.mpluginlib.util;
+package com.hutcwp.cow.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

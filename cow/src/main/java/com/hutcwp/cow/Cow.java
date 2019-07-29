@@ -1,10 +1,10 @@
-package com.hutcwp.mpluginlib;
+package com.hutcwp.cow;
 
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
-import com.hutcwp.mpluginlib.luancher.ApkPluginLauncher;
-import com.hutcwp.mpluginlib.plugin.PluginManager;
+import com.hutcwp.cow.luancher.ApkPluginLauncher;
+import com.hutcwp.cow.plugin.PluginManager;
 
 /**
  * Created by hutcwp on 2019-07-29 16:10

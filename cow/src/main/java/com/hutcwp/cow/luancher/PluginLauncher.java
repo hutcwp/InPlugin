@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package com.hutcwp.mpluginlib.luancher;
+package com.hutcwp.cow.luancher;
 
 import android.app.Application;
 import android.content.Context;
