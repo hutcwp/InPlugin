@@ -16,8 +16,15 @@ public final class Cow {
 
     private static final String TAG = "Cow";
 
+    private static Application mContext = null;
+
+    public static Context getContext() {
+        return mContext;
+    }
+
     public static void preSetUp(Application application) {
         Log.i(TAG, "preSetUp");
+        mContext = application;
         PluginManager.INSTANCE.registerLauncher(new ApkPluginLauncher());
         PluginManager.INSTANCE.initLaunchers(application);
         PluginManager.init(application);
