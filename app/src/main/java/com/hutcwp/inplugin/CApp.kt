@@ -31,6 +31,11 @@ class CApp : Application() {
         }
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        Cow.setUp(this)
+    }
+
     private fun permissionGrant(): Boolean {
         val hasStoragePermissions = AndPermission.hasPermissions(this, Permission.WRITE_EXTERNAL_STORAGE)
         return hasStoragePermissions

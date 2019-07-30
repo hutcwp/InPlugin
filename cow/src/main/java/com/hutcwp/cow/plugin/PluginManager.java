@@ -7,10 +7,8 @@ import android.content.res.Resources;
 import android.os.Environment;
 import android.util.Log;
 import com.hutcwp.cow.luancher.PluginLauncher;
-import com.hutcwp.cow.util.DLUtils;
+import com.hutcwp.cow.util.*;
 import com.hutcwp.cow.hook.BaseDexClassLoaderHookHelper;
-import com.hutcwp.cow.util.RefInvoke;
-import com.hutcwp.cow.util.Utils;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -59,7 +57,9 @@ public enum PluginManager {
     }
 
     public void loadSetupPlugins() {
-
+        for (PluginItem pluginItem : plugins) {
+            PluginController.addLoadActivity(pluginItem.packageInfo.activities);
+        }
     }
 
     /**

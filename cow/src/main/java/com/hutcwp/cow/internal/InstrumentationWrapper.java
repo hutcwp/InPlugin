@@ -16,11 +16,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.Window;
+import com.hutcwp.cow.util.PluginController;
+import com.hutcwp.cow.util.ReflectAccelerator;
 
 /**
  * Class for redirect activity from Stub(AndroidManifest.xml) to Real(Plugin)
@@ -29,10 +33,10 @@ public class InstrumentationWrapper extends Instrumentation {
 
     private static final String TAG = "InstrumentationWrapper";
     private static final int STUB_ACTIVITIES_COUNT = 4;
-    private Instrumentation sHostInstrumentation;
+    private Instrumentation mHostInstrumentation;
 
     public InstrumentationWrapper(Instrumentation hostInstrumentation) {
-        sHostInstrumentation = hostInstrumentation;
+        mHostInstrumentation = hostInstrumentation;
     }
 
 //    /**
@@ -47,7 +51,7 @@ public class InstrumentationWrapper extends Instrumentation {
 //        if (replaceIntent != null) {
 //            intent = replaceIntent;
 //        }
-//        return ReflectAccelerator.execStartActivity(sHostInstrumentation,
+//        return ReflectAccelerator.execStartActivity(mHostInstrumentation,
 //                who, contextThread, token, target, intent, requestCode, options);
 //    }
 //
@@ -62,7 +66,7 @@ public class InstrumentationWrapper extends Instrumentation {
 //        if (replaceIntent != null) {
 //            intent = replaceIntent;
 //        }
-//        return ReflectAccelerator.execStartActivity(sHostInstrumentation,
+//        return ReflectAccelerator.execStartActivity(mHostInstrumentation,
 //                who, contextThread, token, target, intent, requestCode);
 //    }
 
@@ -119,7 +123,7 @@ public class InstrumentationWrapper extends Instrumentation {
 //        try {
 //
 //            if (Build.VERSION.SDK_INT >= 28) {
-//                newActivity = sHostInstrumentation.newActivity(cl, targetClassName[0], intent);
+//                newActivity = mHostInstrumentation.newActivity(cl, targetClassName[0], intent);
 //            } else {
 //                newActivity = (Activity) cl.loadClass(className).newInstance();
 //            }
@@ -133,7 +137,7 @@ public class InstrumentationWrapper extends Instrumentation {
 //                throw exception;
 //            }
 //            if (Build.VERSION.SDK_INT >= 28) {
-//                newActivity = sHostInstrumentation.newActivity(cl, defaultActivityClass, intent);
+//                newActivity = mHostInstrumentation.newActivity(cl, defaultActivityClass, intent);
 //            } else {
 //                newActivity = (Activity) cl.loadClass(defaultActivityClass).newInstance();
 //            }
@@ -164,6 +168,19 @@ public class InstrumentationWrapper extends Instrumentation {
     /** Prepare resources for REAL */
     public void callActivityOnCreate(Activity activity, android.os.Bundle icicle) {
         Log.i(TAG, "callActivityOnCreate");
+        mHostInstrumentation.callActivityOnCreate(activity, icicle);
+        ActivityInfo activityInfo = PluginController.getActivityInfo(activity.getClass().getName());
+        if (activityInfo != null) {
+            Log.i(TAG, "find out activityInfo , name is " + activityInfo.name);
+            if (Build.VERSION.SDK_INT >= 28) {
+                ReflectAccelerator.resetResourcesAndTheme(activity, activityInfo.getThemeResource());
+            }
+
+            Window window = activity.getWindow();
+            window.setSoftInputMode(activityInfo.softInputMode);
+            activity.setRequestedOrientation(activityInfo.screenOrientation);
+        }
+
 //        ActivityTaskMgr.INSTANCE.push2ActivityStack(activity);
 //
 //        do {
@@ -180,7 +197,7 @@ public class InstrumentationWrapper extends Instrumentation {
 //        ReflectAccelerator.updateResource(Small.getContext());
 //
 //        try {
-//            sHostInstrumentation.callActivityOnCreate(activity, icicle);
+//            mHostInstrumentation.callActivityOnCreate(activity, icicle);
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //            if ((e.toString().contains("android.content.res.Resources")
@@ -232,7 +249,7 @@ public class InstrumentationWrapper extends Instrumentation {
 
     @Override
     public void callActivityOnStop(Activity activity) {
-        sHostInstrumentation.callActivityOnStop(activity);
+        mHostInstrumentation.callActivityOnStop(activity);
     }
 
 //    @Override
@@ -250,219 +267,219 @@ public class InstrumentationWrapper extends Instrumentation {
 //                inqueueStubActivity(getLaunchMode(ai, activity.getIntent()), ai, realClazz);
 //            }
 //        } while (false);
-//        sHostInstrumentation.callActivityOnDestroy(activity);
+//        mHostInstrumentation.callActivityOnDestroy(activity);
 //    }
 
     @Override
     public void callActivityOnResume(Activity activity) {
-        sHostInstrumentation.callActivityOnResume(activity);
+        mHostInstrumentation.callActivityOnResume(activity);
     }
 
     @TargetApi(18)
     public UiAutomation getUiAutomation() {
-        return sHostInstrumentation.getUiAutomation();
+        return mHostInstrumentation.getUiAutomation();
     }
 
     public void onCreate(Bundle bundle) {
-        sHostInstrumentation.onCreate(bundle);
+        mHostInstrumentation.onCreate(bundle);
     }
 
     public void start() {
-        sHostInstrumentation.start();
+        mHostInstrumentation.start();
     }
 
     public void onStart() {
-        sHostInstrumentation.onStart();
+        mHostInstrumentation.onStart();
     }
 
     public boolean onException(Object obj, Throwable th) {
-        return sHostInstrumentation.onException(obj, th);
+        return mHostInstrumentation.onException(obj, th);
     }
 
     public void sendStatus(int i, Bundle bundle) {
-        sHostInstrumentation.sendStatus(i, bundle);
+        mHostInstrumentation.sendStatus(i, bundle);
     }
 
     public void finish(int i, Bundle bundle) {
-        sHostInstrumentation.finish(i, bundle);
+        mHostInstrumentation.finish(i, bundle);
     }
 
     public void setAutomaticPerformanceSnapshots() {
-        sHostInstrumentation.setAutomaticPerformanceSnapshots();
+        mHostInstrumentation.setAutomaticPerformanceSnapshots();
     }
 
     public void startPerformanceSnapshot() {
-        sHostInstrumentation.startPerformanceSnapshot();
+        mHostInstrumentation.startPerformanceSnapshot();
     }
 
     public void endPerformanceSnapshot() {
-        sHostInstrumentation.endPerformanceSnapshot();
+        mHostInstrumentation.endPerformanceSnapshot();
     }
 
     public void onDestroy() {
-        sHostInstrumentation.onDestroy();
+        mHostInstrumentation.onDestroy();
     }
 
     public Context getContext() {
-        return sHostInstrumentation.getContext();
+        return mHostInstrumentation.getContext();
     }
 
     public ComponentName getComponentName() {
-        return sHostInstrumentation.getComponentName();
+        return mHostInstrumentation.getComponentName();
     }
 
     public Context getTargetContext() {
-        return sHostInstrumentation.getTargetContext();
+        return mHostInstrumentation.getTargetContext();
     }
 
     public boolean isProfiling() {
-        return sHostInstrumentation.isProfiling();
+        return mHostInstrumentation.isProfiling();
     }
 
     public void startProfiling() {
-        sHostInstrumentation.startProfiling();
+        mHostInstrumentation.startProfiling();
     }
 
     public void stopProfiling() {
-        sHostInstrumentation.stopProfiling();
+        mHostInstrumentation.stopProfiling();
     }
 
     public void setInTouchMode(boolean z) {
-        sHostInstrumentation.setInTouchMode(z);
+        mHostInstrumentation.setInTouchMode(z);
     }
 
     public void waitForIdle(Runnable runnable) {
-        sHostInstrumentation.waitForIdle(runnable);
+        mHostInstrumentation.waitForIdle(runnable);
     }
 
     public void waitForIdleSync() {
-        sHostInstrumentation.waitForIdleSync();
+        mHostInstrumentation.waitForIdleSync();
     }
 
     public void runOnMainSync(Runnable runnable) {
-        sHostInstrumentation.runOnMainSync(runnable);
+        mHostInstrumentation.runOnMainSync(runnable);
     }
 
     public Activity startActivitySync(Intent intent) {
-        return sHostInstrumentation.startActivitySync(intent);
+        return mHostInstrumentation.startActivitySync(intent);
     }
 
     public void addMonitor(ActivityMonitor activityMonitor) {
-        sHostInstrumentation.addMonitor(activityMonitor);
+        mHostInstrumentation.addMonitor(activityMonitor);
     }
 
     public ActivityMonitor addMonitor(IntentFilter intentFilter, ActivityResult activityResult, boolean z) {
-        return sHostInstrumentation.addMonitor(intentFilter, activityResult, z);
+        return mHostInstrumentation.addMonitor(intentFilter, activityResult, z);
     }
 
     public ActivityMonitor addMonitor(String str, ActivityResult activityResult, boolean z) {
-        return sHostInstrumentation.addMonitor(str, activityResult, z);
+        return mHostInstrumentation.addMonitor(str, activityResult, z);
     }
 
     public boolean checkMonitorHit(ActivityMonitor activityMonitor, int i) {
-        return sHostInstrumentation.checkMonitorHit(activityMonitor, i);
+        return mHostInstrumentation.checkMonitorHit(activityMonitor, i);
     }
 
     public Activity waitForMonitor(ActivityMonitor activityMonitor) {
-        return sHostInstrumentation.waitForMonitor(activityMonitor);
+        return mHostInstrumentation.waitForMonitor(activityMonitor);
     }
 
     public Activity waitForMonitorWithTimeout(ActivityMonitor activityMonitor, long j) {
-        return sHostInstrumentation.waitForMonitorWithTimeout(activityMonitor, j);
+        return mHostInstrumentation.waitForMonitorWithTimeout(activityMonitor, j);
     }
 
     public void removeMonitor(ActivityMonitor activityMonitor) {
-        sHostInstrumentation.removeMonitor(activityMonitor);
+        mHostInstrumentation.removeMonitor(activityMonitor);
     }
 
     public boolean invokeMenuActionSync(Activity activity, int i, int i2) {
-        return sHostInstrumentation.invokeMenuActionSync(activity, i, i2);
+        return mHostInstrumentation.invokeMenuActionSync(activity, i, i2);
     }
 
     public boolean invokeContextMenuAction(Activity activity, int i, int i2) {
-        return sHostInstrumentation.invokeContextMenuAction(activity, i, i2);
+        return mHostInstrumentation.invokeContextMenuAction(activity, i, i2);
     }
 
     public void sendStringSync(String str) {
-        sHostInstrumentation.sendStringSync(str);
+        mHostInstrumentation.sendStringSync(str);
     }
 
     public void sendKeySync(KeyEvent keyEvent) {
-        sHostInstrumentation.sendKeySync(keyEvent);
+        mHostInstrumentation.sendKeySync(keyEvent);
     }
 
     public void sendKeyDownUpSync(int i) {
-        sHostInstrumentation.sendKeyDownUpSync(i);
+        mHostInstrumentation.sendKeyDownUpSync(i);
     }
 
     public void sendCharacterSync(int i) {
-        sHostInstrumentation.sendCharacterSync(i);
+        mHostInstrumentation.sendCharacterSync(i);
     }
 
     public void sendPointerSync(MotionEvent motionEvent) {
-        sHostInstrumentation.sendPointerSync(motionEvent);
+        mHostInstrumentation.sendPointerSync(motionEvent);
     }
 
     public void sendTrackballEventSync(MotionEvent motionEvent) {
-        sHostInstrumentation.sendTrackballEventSync(motionEvent);
+        mHostInstrumentation.sendTrackballEventSync(motionEvent);
     }
 
     public Application newApplication(ClassLoader classLoader, String str, Context context) throws
             InstantiationException, IllegalAccessException, ClassNotFoundException {
-        return sHostInstrumentation.newApplication(classLoader, str, context);
+        return mHostInstrumentation.newApplication(classLoader, str, context);
     }
 
     public void callApplicationOnCreate(Application application) {
-        sHostInstrumentation.callApplicationOnCreate(application);
+        mHostInstrumentation.callApplicationOnCreate(application);
     }
 
 
     public void callActivityOnRestoreInstanceState(Activity activity, Bundle bundle) {
-        sHostInstrumentation.callActivityOnRestoreInstanceState(activity, bundle);
+        mHostInstrumentation.callActivityOnRestoreInstanceState(activity, bundle);
     }
 
     public void callActivityOnPostCreate(Activity activity, Bundle bundle) {
-        sHostInstrumentation.callActivityOnPostCreate(activity, bundle);
+        mHostInstrumentation.callActivityOnPostCreate(activity, bundle);
     }
 
     public void callActivityOnNewIntent(Activity activity, Intent intent) {
-        sHostInstrumentation.callActivityOnNewIntent(activity, intent);
+        mHostInstrumentation.callActivityOnNewIntent(activity, intent);
     }
 
     public void callActivityOnStart(Activity activity) {
-        sHostInstrumentation.callActivityOnStart(activity);
+        mHostInstrumentation.callActivityOnStart(activity);
     }
 
     public void callActivityOnRestart(Activity activity) {
-        sHostInstrumentation.callActivityOnRestart(activity);
+        mHostInstrumentation.callActivityOnRestart(activity);
     }
 
     public void callActivityOnSaveInstanceState(Activity activity, Bundle bundle) {
-        sHostInstrumentation.callActivityOnSaveInstanceState(activity, bundle);
+        mHostInstrumentation.callActivityOnSaveInstanceState(activity, bundle);
     }
 
     public void callActivityOnPause(Activity activity) {
-        sHostInstrumentation.callActivityOnPause(activity);
+        mHostInstrumentation.callActivityOnPause(activity);
     }
 
     public void callActivityOnUserLeaving(Activity activity) {
-        sHostInstrumentation.callActivityOnUserLeaving(activity);
+        mHostInstrumentation.callActivityOnUserLeaving(activity);
     }
 
     public void startAllocCounting() {
-        sHostInstrumentation.startAllocCounting();
+        mHostInstrumentation.startAllocCounting();
     }
 
     public void stopAllocCounting() {
-        sHostInstrumentation.stopAllocCounting();
+        mHostInstrumentation.stopAllocCounting();
     }
 
     public Bundle getAllocCounts() {
-        return sHostInstrumentation.getAllocCounts();
+        return mHostInstrumentation.getAllocCounts();
     }
 
     public Bundle getBinderCounts() {
-        return sHostInstrumentation.getBinderCounts();
+        return mHostInstrumentation.getBinderCounts();
     }
 
 //    private Intent wrapIntent(Intent intent) {

@@ -4,7 +4,9 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 import com.hutcwp.cow.luancher.ApkPluginLauncher;
+import com.hutcwp.cow.luancher.ApkPluginLauncher2;
 import com.hutcwp.cow.plugin.PluginManager;
+import com.hutcwp.cow.util.ReflectAccelerator;
 
 /**
  * Created by hutcwp on 2019-07-29 16:10
@@ -25,7 +27,9 @@ public final class Cow {
     public static void preSetUp(Application application) {
         Log.i(TAG, "preSetUp");
         mContext = application;
-        PluginManager.INSTANCE.registerLauncher(new ApkPluginLauncher());
+        ReflectAccelerator.init(application);
+        ReflectAccelerator.lazyInit(application);
+        PluginManager.INSTANCE.registerLauncher(new ApkPluginLauncher2());
         PluginManager.INSTANCE.initLaunchers(application);
         PluginManager.init(application);
     }

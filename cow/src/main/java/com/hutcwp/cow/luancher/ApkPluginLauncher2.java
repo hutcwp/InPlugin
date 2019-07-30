@@ -26,6 +26,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Handler;
 import android.view.Window;
+import com.hutcwp.cow.internal.InstrumentationWrapper;
 import com.hutcwp.cow.util.ReflectAccelerator;
 
 import java.util.ArrayList;
@@ -65,7 +66,6 @@ public class ApkPluginLauncher2 extends PluginLauncher {
     private static Map<String, Integer> sErrorActivityRecords = new HashMap<>();
 
     //    private static ConcurrentHashMap<String, PluginDexLoader.LoadedApk> sLoadedApks;
-    private static ConcurrentHashMap<String, ActivityInfo> sLoadedActivities = new ConcurrentHashMap<>();
     private static ConcurrentHashMap<String, List<IntentFilter>> sLoadedIntentFilters;
 
     private static List<String> sRespathList = new ArrayList<>();
@@ -83,14 +83,14 @@ public class ApkPluginLauncher2 extends PluginLauncher {
         super.preSetUp(context);
         if (sHostInstrumentation == null) {
             try {
-//                sHostInstrumentation = ReflectAccelerator.getHostInstrumentation();
-//                Instrumentation wrapper = new InstrumentationWrapper(sHostInstrumentation);
-//                ReflectAccelerator.setHostInstrumentation(wrapper);
-//
-//                if (!sHostInstrumentation.getClass().getName().equals("android.app.Instrumentation")) {
-//                    sBundleInstrumentation = wrapper; // record for later replacement
-//                }
-//
+                sHostInstrumentation = ReflectAccelerator.getHostInstrumentation();
+                Instrumentation wrapper = new InstrumentationWrapper(sHostInstrumentation);
+                ReflectAccelerator.setHostInstrumentation(wrapper);
+
+                if (!sHostInstrumentation.getClass().getName().equals("android.app.Instrumentation")) {
+                    sBundleInstrumentation = wrapper; // record for later replacement
+                }
+
 //                ReflectAccelerator.setActivityThreadHandlerCallback(new ActivityThreadHandlerCallback());
             } catch (Exception ignored) {
                 ignored.printStackTrace();
