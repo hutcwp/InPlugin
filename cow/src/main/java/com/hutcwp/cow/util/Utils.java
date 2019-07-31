@@ -1,7 +1,7 @@
 package com.hutcwp.cow.util;
 
 import android.content.Context;
-import android.os.Environment;
+import android.util.Log;
 
 import java.io.*;
 
@@ -22,11 +22,9 @@ public class Utils {
         InputStream is = null;
         FileOutputStream fos = null;
         try {
-            String dirPath = Environment.getExternalStorageDirectory().getAbsoluteFile() + File.separator
-                    + "mplugins/";
-            File file = new File(dirPath + sourceName);
+            File file = new File(sourceName);
             is = new FileInputStream(file);
-            File extractFile = context.getFileStreamPath(sourceName);
+            File extractFile = context.getFileStreamPath(file.getName());
             fos = new FileOutputStream(extractFile);
             byte[] buffer = new byte[1024];
             int count = 0;
@@ -35,6 +33,7 @@ public class Utils {
             }
             fos.flush();
         } catch (IOException e) {
+            Log.e("extractAssets", "extractAssets error.", e);
             e.printStackTrace();
         } finally {
             closeSilently(is);

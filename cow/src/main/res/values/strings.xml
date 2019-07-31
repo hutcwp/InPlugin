@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">mpluginlib</string>
+    <string name="plugin_string">
+        {
+        "pluginDir":"plugins",
+        "plugins":[
+        {
+        "id":"1",
+        "launchMode":"",
+        "loadMode":3,
+        "loadPriority":"40",
+        "packageName":"com.yy.mobile.plugin.ycloud",
+        "version":"7.20.0_maint-SNAPSHOT"
+        },
+        {
+        "id":"11",
+        "launchMode":"PLUGINCNETER_PLUGIN_START,PLUGINCENTER_PLUGIN_CLOSE,PK_VIEW_LIVE",
+        "loadMode":2,
+        "loadPriority":"600300",
+        "packageName":"com.yy.mobile.channelpk",
+        "version":"7.20.0_maint-SNAPSHOT"
+        }
+        ],
+        "version":"1.0.0"
+        }
+    </string>
 </resources>

@@ -44,7 +44,7 @@ assemble.doLast {
             variant.outputs.each { output ->
                 File originFile = output.outputFile
                 println originFile.absolutePath
-                def pluginName = "plugin1.apk"
+                def pluginName = "plugina.apk"
 //                copy {
 //                    println 'copy task...'
 //                    from originFile
