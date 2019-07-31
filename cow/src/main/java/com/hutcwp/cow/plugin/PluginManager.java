@@ -7,7 +7,6 @@ import android.content.res.Resources;
 import android.util.Log;
 import com.hutcwp.cow.hook.BaseDexClassLoaderHookHelper;
 import com.hutcwp.cow.luancher.PluginLauncher;
-import com.hutcwp.cow.util.DLUtils;
 import com.hutcwp.cow.util.JsonUtil;
 import com.hutcwp.cow.util.PluginController;
 import com.hutcwp.cow.util.PluginUtil;
@@ -76,17 +75,11 @@ public enum PluginManager {
             return false;
         }
 
-        List<PluginRecord> pluginRecords = new ArrayList<>();
         for (PluginInfo info : pluginInfos) {
-            PluginRecord pluginRecord = generatePluginRecord(info.apkFileName);
-            pluginRecord.setPluginInfo(info);
+            PluginRecord pluginRecord = PluginRecord.generatePluginRecord(mBaseContext, info);
             pluginRecords.add(pluginRecord);
-            PluginManager.pluginRecords.add(pluginRecord);
-        }
-
-        //  逐个loadPlugin
-        for (PluginRecord pluginRecord : pluginRecords) {
             loadPlugin(pluginRecord);
+            loadSetupPlugins();
         }
         return true;
     }
@@ -171,15 +164,6 @@ public enum PluginManager {
         } catch (Throwable e) {
             Log.e(TAG, "updateResource error.", e);
         }
-    }
-
-    private static PluginRecord generatePluginRecord(String apkName) {
-        File file = mBaseContext.getFileStreamPath(apkName);
-        PluginRecord item = new PluginRecord();
-        item.pluginPath = file.getAbsolutePath();
-        item.packageInfo = DLUtils.getPackageInfo(mBaseContext, item.pluginPath);
-        item.pluginParser = PluginParser.parsePackage(file);
-        return item;
     }
 
     private void mergeDexs(String apkName, String dexName) {

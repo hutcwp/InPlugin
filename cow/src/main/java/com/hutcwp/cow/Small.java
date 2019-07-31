@@ -35,9 +35,7 @@ public final class Small {
 
     public static void setUp(Context context) {
         Log.i(TAG, "setUp");
-        if (PluginManager.INSTANCE.setup(context)) {
-            PluginManager.INSTANCE.loadSetupPlugins();
-        }
+        PluginManager.INSTANCE.setup(context);
     }
 
     public static void postSetUp() {
