@@ -5,7 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import com.hutcwp.cow.plugin.PluginManager;
+import com.hutcwp.cow.util.PluginController;
 import com.hutcwp.cow.util.RefInvoke;
 
 import java.lang.reflect.Field;
@@ -15,9 +15,10 @@ import java.util.List;
  * @author weishu
  * @date 16/1/7
  */
-/* package */ class HandlerCallbackHook implements Handler.Callback {
+class HandlerCallbackHook implements Handler.Callback {
 
-    Handler mBase;
+
+    private Handler mBase;
 
     public HandlerCallbackHook(Handler base) {
         mBase = base;
@@ -49,12 +50,10 @@ import java.util.List;
 
         // 把替身恢复成真身
         Intent raw = (Intent) RefInvoke.getFieldObject(obj, "intent");
-
         Intent target = raw.getParcelableExtra(AMSHookHelper.EXTRA_TARGET_INTENT);
         Log.e("test", "raw = " + raw.toString());
         Log.e("test", "target = " + target.toString());
         raw.setComponent(target.getComponent());
-
         try {
             Object/*ActivityClientRecord*/ r = msg.obj;
             Class cls = r.getClass();
@@ -62,19 +61,16 @@ import java.util.List;
             Field field = cls.getDeclaredField(fieldName);
             field.setAccessible(true);
 
-            ActivityInfo[] activities = PluginManager.plugins.get(0).pluginParser.getPackageInfo().activities;
-            for (ActivityInfo ai : activities) {
-                if (ai.name.equals(target.getComponent().getClassName())) {
-                    field.set(r, ai);
-                    Log.e("test", "find out activityInfo , name is " + ai.name);
-                    break;
+            try {
+                ActivityInfo activityInfo = PluginController.getActivityInfoByQuery(target.getComponent().getClassName());
+                if (activityInfo != null) {
+                    Log.e("test", "find out activityInfo , name is " + activityInfo.name);
+                    field.set(r, activityInfo);
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            ActivityInfo activityInfo = (ActivityInfo) RefInvoke.getFieldObject(r.getClass(), r, fieldName);
-            Log.e("test", "finally activityInfo.is " + activityInfo.name);
         } catch (Exception e) {
-            //
             Log.e("test", "get activity info  error ", e);
         }
     }
@@ -103,7 +99,6 @@ import java.util.List;
                         object, "mInfo");
                 Log.i("test", "default screenOrientation is " + activityInfo.screenOrientation);
                 activityInfo.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
-
 
                 ActivityInfo activityInfo2 = (ActivityInfo) RefInvoke.getFieldObject(object, "mInfo");
                 Log.i("test", " after default screenOrientation is " + activityInfo2.screenOrientation);

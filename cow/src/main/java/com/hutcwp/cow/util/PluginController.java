@@ -1,6 +1,8 @@
 package com.hutcwp.cow.util;
 
 import android.content.pm.ActivityInfo;
+import com.hutcwp.cow.plugin.PluginManager;
+import com.hutcwp.cow.plugin.PluginRecord;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,5 +28,17 @@ public class PluginController {
         }
 
         return sLoadedActivities.get(className);
+    }
+
+    public static ActivityInfo getActivityInfoByQuery(String className) {
+        for (PluginRecord pluginRecord : PluginManager.pluginRecords) {
+            for (ActivityInfo activityInfo : pluginRecord.pluginParser.getPackageInfo().activities) {
+                if (activityInfo.name.equals(className)) {
+                    return activityInfo;
+                }
+            }
+        }
+
+        return null;
     }
 }

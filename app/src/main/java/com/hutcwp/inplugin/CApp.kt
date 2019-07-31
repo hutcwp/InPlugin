@@ -3,7 +3,7 @@ package com.hutcwp.inplugin
 import android.app.Application
 import android.content.Context
 import android.widget.Toast
-import com.hutcwp.cow.Cow
+import com.hutcwp.cow.Small
 import com.yanzhenjie.permission.AndPermission
 import com.yanzhenjie.permission.runtime.Permission
 
@@ -15,7 +15,7 @@ class CApp : Application() {
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(newBase)
         if (permissionGrant()) {
-            Cow.preSetUp(this)
+            Small.preSetUp(this)
         } else {
             Toast.makeText(this, "外存读写权限未授予,请授予", Toast.LENGTH_LONG).show()
             AndPermission.with(this)
@@ -33,7 +33,7 @@ class CApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Cow.setUp(this)
+        Small.setUp(this)
     }
 
     private fun permissionGrant(): Boolean {

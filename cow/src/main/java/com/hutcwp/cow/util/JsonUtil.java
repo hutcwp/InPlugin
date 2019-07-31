@@ -16,8 +16,8 @@ import java.util.List;
 public class JsonUtil {
 
     public static final String pluginJsonStr = "{\n" +
-            "\"pluginDir\":\"plugins\",\n" +
-            "\"plugins\":[\n" +
+            "\"pluginDir\":\"pluginRecords\",\n" +
+            "\"pluginRecords\":[\n" +
             "{\n" +
             "\"id\":\"1\",\n" +
             "\"launchMode\":\"\",\n" +
@@ -61,7 +61,7 @@ public class JsonUtil {
     interface ConfigKeys {
         String PLUGIN_DIR = "pluginDir";
         String VERSION = "version";
-        String PLUGINS = "plugins";
+        String PLUGINS = "pluginRecords";
     }
 
 

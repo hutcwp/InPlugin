@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
     public void startService1InPlugin1(View view) {
         try {
             Intent intent = new Intent();
-            String serviceName = PluginManager.plugins.get(0).packageInfo.packageName + ".TestService1";
+            String serviceName = PluginManager.pluginRecords.get(0).packageInfo.packageName + ".TestService1";
             intent.setClass(this, Class.forName(serviceName));
             startService(intent);
         } catch (ClassNotFoundException e) {

@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 import com.hutcwp.cow.luancher.ApkPluginLauncher;
-import com.hutcwp.cow.luancher.ApkPluginLauncher2;
 import com.hutcwp.cow.plugin.PluginManager;
 import com.hutcwp.cow.util.ReflectAccelerator;
 
@@ -14,9 +13,9 @@ import com.hutcwp.cow.util.ReflectAccelerator;
  * YY: 909076244
  * 随便起的一个名字，类似Small...
  **/
-public final class Cow {
+public final class Small {
 
-    private static final String TAG = "Cow";
+    private static final String TAG = "Small";
 
     private static Application mContext = null;
 
@@ -29,7 +28,7 @@ public final class Cow {
         mContext = application;
         ReflectAccelerator.init(application);
         ReflectAccelerator.lazyInit(application);
-        PluginManager.INSTANCE.registerLauncher(new ApkPluginLauncher2());
+        PluginManager.INSTANCE.registerLauncher(new ApkPluginLauncher());
         PluginManager.INSTANCE.initLaunchers(application);
         PluginManager.init(application);
     }

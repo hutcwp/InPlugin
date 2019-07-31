@@ -31,7 +31,7 @@ import android.os.IBinder;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
-import com.hutcwp.cow.Cow;
+import com.hutcwp.cow.Small;
 import com.hutcwp.cow.logging.Logging;
 
 
@@ -473,7 +473,7 @@ public class ReflectAccelerator {
                 }
 
                 if (Build.VERSION.SDK_INT >= 24) {
-                    if (resources == Cow.getContext().getResources()) {
+                    if (resources == Small.getContext().getResources()) {
                         sMergedResourcesImpl = resourceImpl;
                     }
                 }

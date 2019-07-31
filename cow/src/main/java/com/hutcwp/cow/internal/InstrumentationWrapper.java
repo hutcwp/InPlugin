@@ -92,8 +92,8 @@ public class InstrumentationWrapper extends Instrumentation {
 //            ClassNotFoundException {
 //        final String[] targetClassName = {className};
 //        if (Build.VERSION.SDK_INT >= 28) {
-//            ApkPluginLauncher2.ActivityThreadHandlerCallback.tryReplaceActivityInfo(
-//            intent, new ApkPluginLauncher2.ActivityThreadHandlerCallback.ActivityInfoReplacer() {
+//            ApkPluginLauncher.ActivityThreadHandlerCallback.tryReplaceActivityInfo(
+//            intent, new ApkPluginLauncher.ActivityThreadHandlerCallback.ActivityInfoReplacer() {
 //                @Override
 //                public void replace(ActivityInfo info) {
 //                    if (info == null) {
@@ -210,12 +210,12 @@ public class InstrumentationWrapper extends Instrumentation {
 //                    if (!sErrorActivityRecords.containsKey(name)) {
 //                        sErrorActivityRecords.put(name, 0);
 //                    }
-//                    Log.e("ApkPluginLauncher2", "callActivityOnCreate failed - " + name);
+//                    Log.e("ApkPluginLauncher", "callActivityOnCreate failed - " + name);
 //                    Integer count = sErrorActivityRecords.get(name);
-//                    Log.e("ApkPluginLauncher2", "callActivityOnCreate failed - " + name + "count = " + count);
+//                    Log.e("ApkPluginLauncher", "callActivityOnCreate failed - " + name + "count = " + count);
 //                    if (count > 2) {
 //                        StatisticsUtils.startActivityFailed("callActivityOnCreate2", e.toString());
-//                        Log.e("ApkPluginLauncher2", "callActivityOnCreate failed, throw exception");
+//                        Log.e("ApkPluginLauncher", "callActivityOnCreate failed, throw exception");
 //                        throw e;
 //                    } else {
 //                        sErrorActivityRecords.put(name, count + 1);
