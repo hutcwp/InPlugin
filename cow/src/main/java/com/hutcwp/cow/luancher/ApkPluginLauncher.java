@@ -19,8 +19,20 @@ package com.hutcwp.cow.luancher;
 import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.content.res.Resources;
+import android.util.Log;
+import com.hutcwp.cow.hook.BaseDexClassLoaderHookHelper;
 import com.hutcwp.cow.internal.InstrumentationWrapper;
+import com.hutcwp.cow.plugin.PluginManager;
+import com.hutcwp.cow.plugin.PluginRecord;
+import com.hutcwp.cow.util.PluginUtil;
+import com.hutcwp.cow.util.RefInvoke;
 import com.hutcwp.cow.util.ReflectAccelerator;
+import com.hutcwp.cow.util.Utils;
+
+import java.io.File;
+import java.lang.reflect.Method;
 
 
 /**
@@ -80,5 +92,81 @@ public class ApkPluginLauncher extends PluginLauncher {
     @Override
     public void postSetUp() {
         super.postSetUp();
+        for (PluginRecord pluginRecord : PluginManager.pluginRecords) {
+            loadPlugin(pluginRecord);
+        }
     }
+
+    // todo 还需要支持apk,so,jar等类型
+    private void loadPlugin(PluginRecord pluginRecord) {
+        try {
+            String path = PluginUtil.getPluginPath(pluginRecord.getPluginInfo().apkFileName);
+            String apkName = pluginRecord.getPluginInfo().apkFileName;
+            String dexName = apkName.replace(".apk", ".dex");
+            if (path.endsWith(".apk")) {
+                Log.i(TAG, "loadPlugin: plugin -> " + apkName);
+                Utils.extractAssets(PluginManager.mBaseContext, path);
+                mergeDexs(apkName, dexName);
+                updateResource(path);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "error , loadPlugin error ", e);
+        }
+    }
+
+    private void updateResource(String pluginPath) {
+        Log.i(TAG, "updateResource");
+        try {
+            if (PluginManager.mNowResources == null) {
+                Log.i(TAG, "init resource");
+                AssetManager assetManager = AssetManager.class.newInstance();
+                Method addAssetPath = AssetManager.class.getMethod("addAssetPath", String.class);
+                addAssetPath.invoke(assetManager, PluginManager.mBaseContext.getPackageResourcePath());
+                addAssetPath.invoke(assetManager, pluginPath);
+                Log.i(TAG, "addAssetPath path = " + pluginPath);
+
+                Resources newResources = new Resources(assetManager,
+                        PluginManager.mBaseContext.getResources().getDisplayMetrics(),
+                        PluginManager.mBaseContext.getResources().getConfiguration());
+
+                RefInvoke.setFieldObject(PluginManager.mBaseContext, "mResources", newResources);
+                //这是最主要的需要替换的，如果不支持插件运行时更新，只留这一个就可以了
+                RefInvoke.setFieldObject(PluginManager.mPackageInfo, "mResources", newResources);
+
+                PluginManager.mNowResources = newResources;
+                //需要清理mTheme对象，否则通过inflate方式加载资源会报错
+                //如果是activity动态加载插件，则需要把activity的mTheme对象也设置为null
+                RefInvoke.setFieldObject(PluginManager.mBaseContext, "mTheme", null);
+            } else {
+                AssetManager assetManager = PluginManager.mNowResources.getAssets();
+                Method addAssetPath = AssetManager.class.getMethod("addAssetPath", String.class);
+                addAssetPath.invoke(assetManager, pluginPath);
+                Resources newResources = new Resources(assetManager,
+                        PluginManager.mBaseContext.getResources().getDisplayMetrics(),
+                        PluginManager.mBaseContext.getResources().getConfiguration());
+
+                RefInvoke.setFieldObject(PluginManager.mBaseContext, "mResources", newResources);
+                //这是最主要的需要替换的，如果不支持插件运行时更新，只留这一个就可以了
+                RefInvoke.setFieldObject(PluginManager.mPackageInfo, "mResources", newResources);
+
+                PluginManager.mNowResources = newResources;
+                //需要清理mTheme对象，否则通过inflate方式加载资源会报错
+                //如果是activity动态加载插件，则需要把activity的mTheme对象也设置为null
+                RefInvoke.setFieldObject(PluginManager.mBaseContext, "mTheme", null);
+            }
+        } catch (Throwable e) {
+            Log.e(TAG, "updateResource error.", e);
+        }
+    }
+
+    private void mergeDexs(String apkName, String dexName) {
+        File dexFile = PluginManager.mBaseContext.getFileStreamPath(apkName);
+        File optDexFile = PluginManager.mBaseContext.getFileStreamPath(dexName);
+        try {
+            BaseDexClassLoaderHookHelper.patchClassLoader(PluginManager.mBaseContext.getClassLoader(), dexFile, optDexFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
