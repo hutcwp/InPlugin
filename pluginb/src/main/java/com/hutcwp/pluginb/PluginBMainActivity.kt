@@ -1,7 +1,7 @@
 package com.hutcwp.pluginb
 
 import android.os.Bundle
-import com.hutcwp.cow.ZeusBaseActivity
+import com.hutcwp.small.ZeusBaseActivity
 
 class PluginBMainActivity : ZeusBaseActivity() {
 

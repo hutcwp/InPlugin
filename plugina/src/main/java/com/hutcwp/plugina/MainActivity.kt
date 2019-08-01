@@ -2,7 +2,7 @@ package com.hutcwp.plugina
 
 import android.os.Bundle
 import android.util.Log
-import com.hutcwp.cow.ZeusBaseActivity
+import com.hutcwp.small.ZeusBaseActivity
 
 class MainActivity : ZeusBaseActivity() {
 
