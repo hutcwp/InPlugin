@@ -81,7 +81,9 @@ public enum PluginManager {
 
     public void loadSetupPlugins() {
         for (PluginRecord pluginRecord : pluginRecords) {
-            PluginController.addLoadActivity(pluginRecord.packageInfo.activities);
+            if (pluginRecord.packageInfo != null) {
+                PluginController.addLoadActivity(pluginRecord.packageInfo.activities);
+            }
         }
     }
 
