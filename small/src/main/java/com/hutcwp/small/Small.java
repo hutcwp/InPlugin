@@ -3,7 +3,6 @@ package com.hutcwp.small;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
-import com.hutcwp.small.luancher.ApkPluginLauncher;
 import com.hutcwp.small.plugin.PluginManager;
 import com.hutcwp.small.util.ReflectAccelerator;
 
@@ -28,9 +27,8 @@ public final class Small {
         mContext = application;
         ReflectAccelerator.init(application);
         ReflectAccelerator.lazyInit(application);
-        PluginManager.INSTANCE.registerLauncher(new ApkPluginLauncher());
-        PluginManager.INSTANCE.initLaunchers(application);
         PluginManager.init(application);
+        PluginManager.INSTANCE.preSetUp(application);
     }
 
     public static void setUp(Context context) {

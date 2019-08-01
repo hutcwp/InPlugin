@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
+import com.hutcwp.small.luancher.ApkPluginLauncher;
 import com.hutcwp.small.luancher.PluginLauncher;
 import com.hutcwp.small.util.JsonUtil;
 import com.hutcwp.small.util.PluginController;
@@ -18,7 +19,7 @@ public enum PluginManager {
 
     private static final String TAG = "PluginManager";
 
-    public final static List<PluginRecord> pluginRecords = new ArrayList<PluginRecord>();
+    public final static List<PluginRecord> pluginRecords = new ArrayList<>();
     private List<PluginLauncher> mPluginLaunchers = null;
     public static volatile Resources mNowResources;
     public static volatile Context mBaseContext;
@@ -33,31 +34,11 @@ public enum PluginManager {
         mNowResources = mBaseContext.getResources();
     }
 
-    /**
-     * 注册加载器
-     *
-     * @param launcher
-     */
-    public void registerLauncher(PluginLauncher launcher) {
-        if (mPluginLaunchers == null) {
-            mPluginLaunchers = new ArrayList<>();
-        }
-        mPluginLaunchers.add(launcher);
-    }
 
-    /**
-     * 初始化加载器
-     *
-     * @param context applicationContext
-     */
-    public void initLaunchers(Application context) {
-        if (mPluginLaunchers == null) {
-            return;
-        }
 
-        for (PluginLauncher launcher : mPluginLaunchers) {
-            launcher.preSetUp(context);
-        }
+    public void preSetUp(Application application) {
+        PluginManager.INSTANCE.registerLauncher(new ApkPluginLauncher());
+        PluginManager.INSTANCE.preSetUpLaunchers(application);
     }
 
     public boolean setup(Context context) {
@@ -72,7 +53,6 @@ public enum PluginManager {
         for (PluginInfo info : pluginInfos) {
             PluginRecord pluginRecord = PluginRecord.generatePluginRecord(mBaseContext, info);
             pluginRecords.add(pluginRecord);
-//            loadPlugin(pluginRecord);
             loadSetupPlugins();
         }
         postSetUpLauncher();
@@ -88,11 +68,38 @@ public enum PluginManager {
     }
 
     /**
+     * 注册加载器
+     *
+     * @param launcher
+     */
+    private void registerLauncher(PluginLauncher launcher) {
+        if (mPluginLaunchers == null) {
+            mPluginLaunchers = new ArrayList<>();
+        }
+        mPluginLaunchers.add(launcher);
+    }
+
+    /**
+     * 初始化加载器
+     *
+     * @param context applicationContext
+     */
+    private void preSetUpLaunchers(Application context) {
+        if (mPluginLaunchers == null) {
+            return;
+        }
+
+        for (PluginLauncher launcher : mPluginLaunchers) {
+            launcher.preSetUp(context);
+        }
+    }
+
+    /**
      * 启动初始化加载器
      *
      * @param context applicationContext
      */
-    public void setupLaunchers(Context context) {
+    private void setupLaunchers(Context context) {
         if (mPluginLaunchers == null) {
             return;
         }

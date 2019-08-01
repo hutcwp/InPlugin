@@ -17,6 +17,7 @@ import java.util.List;
  */
 class HandlerCallbackHook implements Handler.Callback {
 
+    private static final String TAG = "HandlerCallbackHook";
 
     private Handler mBase;
 
@@ -51,8 +52,8 @@ class HandlerCallbackHook implements Handler.Callback {
         // 把替身恢复成真身
         Intent raw = (Intent) RefInvoke.getFieldObject(obj, "intent");
         Intent target = raw.getParcelableExtra(AMSHookHelper.EXTRA_TARGET_INTENT);
-        Log.e("test", "raw = " + raw.toString());
-        Log.e("test", "target = " + target.toString());
+        Log.e(TAG, "raw = " + raw.toString());
+        Log.e(TAG, "target = " + target.toString());
         raw.setComponent(target.getComponent());
         try {
             Object/*ActivityClientRecord*/ r = msg.obj;
@@ -62,16 +63,17 @@ class HandlerCallbackHook implements Handler.Callback {
             field.setAccessible(true);
 
             try {
-                ActivityInfo activityInfo = PluginController.getActivityInfoByQuery(target.getComponent().getClassName());
+                ActivityInfo activityInfo = PluginController
+                        .getActivityInfoByQuery(target.getComponent().getClassName());
                 if (activityInfo != null) {
-                    Log.e("test", "find out activityInfo , name is " + activityInfo.name);
+                    Log.e(TAG, "find out activityInfo , name is " + activityInfo.name);
                     field.set(r, activityInfo);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } catch (Exception e) {
-            Log.e("test", "get activity info  error ", e);
+            Log.e(TAG, "get activity info  error ", e);
         }
     }
 
@@ -91,17 +93,17 @@ class HandlerCallbackHook implements Handler.Callback {
 
                 Intent intent = (Intent) RefInvoke.getFieldObject(object, "mIntent");
                 Intent target = intent.getParcelableExtra(AMSHookHelper.EXTRA_TARGET_INTENT);
-                Log.e("test", "raw = " + intent.toString());
-                Log.e("test", "target = " + target.toString());
+                Log.e(TAG, "raw = " + intent.toString());
+                Log.e(TAG, "target = " + target.toString());
                 intent.setComponent(target.getComponent());
                 // replace ai
                 ActivityInfo activityInfo = (ActivityInfo) RefInvoke.getFieldObject(
                         object, "mInfo");
-                Log.i("test", "default screenOrientation is " + activityInfo.screenOrientation);
+                Log.i(TAG, "default screenOrientation is " + activityInfo.screenOrientation);
                 activityInfo.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 
                 ActivityInfo activityInfo2 = (ActivityInfo) RefInvoke.getFieldObject(object, "mInfo");
-                Log.i("test", " after default screenOrientation is " + activityInfo2.screenOrientation);
+                Log.i(TAG, " after default screenOrientation is " + activityInfo2.screenOrientation);
 //                RefInvoke.setFieldObject(object, "mInfo", activityInfo);
             }
         }
