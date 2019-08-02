@@ -19,7 +19,7 @@ public enum PluginManager {
 
     private static final String TAG = "PluginManager";
 
-    public final static List<PluginRecord> pluginRecords = new ArrayList<>();
+    public static List<PluginRecord> mPluginRecords = new ArrayList<>();
     private List<PluginLauncher> mPluginLaunchers = null;
     public static volatile Resources mNowResources;
     public static volatile Context mBaseContext;
@@ -28,13 +28,10 @@ public enum PluginManager {
     public static Object mPackageInfo = null;
 
     public static void init(Application application) {
-        //初始化一些成员变量和加载已安装的插件
         mPackageInfo = RefInvoke.getFieldObject(application.getBaseContext(), "mPackageInfo");
         mBaseContext = application.getBaseContext();
         mNowResources = mBaseContext.getResources();
     }
-
-
 
     public void preSetUp(Application application) {
         PluginManager.INSTANCE.registerLauncher(new ApkPluginLauncher());
@@ -52,7 +49,7 @@ public enum PluginManager {
 
         for (PluginInfo info : pluginInfos) {
             PluginRecord pluginRecord = PluginRecord.generatePluginRecord(mBaseContext, info);
-            pluginRecords.add(pluginRecord);
+            mPluginRecords.add(pluginRecord);
             loadSetupPlugins();
         }
         postSetUpLauncher();
@@ -60,9 +57,9 @@ public enum PluginManager {
     }
 
     public void loadSetupPlugins() {
-        for (PluginRecord pluginRecord : pluginRecords) {
-            if (pluginRecord.packageInfo != null) {
-                PluginController.addLoadActivity(pluginRecord.packageInfo.activities);
+        for (PluginRecord pluginRecord : mPluginRecords) {
+            if (pluginRecord.getPackageInfo() != null) {
+                PluginController.addLoadActivity(pluginRecord.getPackageInfo().activities);
             }
         }
     }

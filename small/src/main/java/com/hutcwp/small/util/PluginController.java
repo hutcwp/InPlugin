@@ -31,8 +31,8 @@ public class PluginController {
     }
 
     public static ActivityInfo getActivityInfoByQuery(String className) {
-        for (PluginRecord pluginRecord : PluginManager.pluginRecords) {
-            for (ActivityInfo activityInfo : pluginRecord.pluginParser.getPackageInfo().activities) {
+        for (PluginRecord pluginRecord : PluginManager.mPluginRecords) {
+            for (ActivityInfo activityInfo : pluginRecord.getPluginParser().getPackageInfo().activities) {
                 if (activityInfo.name.equals(className)) {
                     return activityInfo;
                 }

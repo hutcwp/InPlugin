@@ -45,22 +45,4 @@ public class AMSHookHelper {
         RefInvoke.setFieldObject("android.util.Singleton", gDefault, "mInstance", proxy);
     }
 
-    /**
-     * 由于之前我们用替身欺骗了AMS; 现在我们要换回我们真正需要启动的Activity
-     * 不然就真的启动替身了, 狸猫换太子...
-     * 到最终要启动Activity的时候,会交给ActivityThread 的一个内部类叫做 H 来完成
-     * H 会完成这个消息转发; 最终调用它的callback
-     */
-    public static void hookActivityThread() throws Exception {
-
-        // 先获取到当前的ActivityThread对象
-        Object currentActivityThread =
-                RefInvoke.getStaticFieldObject("android.app.ActivityThread", "sCurrentActivityThread");
-
-        // 由于ActivityThread一个进程只有一个,我们获取这个对象的mH
-        Handler mH = (Handler) RefInvoke.getFieldObject(currentActivityThread, "mH");
-
-        //把Handler的mCallback字段，替换为new HandlerCallbackHook(mH)
-        RefInvoke.setFieldObject(Handler.class, mH, "mCallback", new HandlerCallbackHook(mH));
-    }
 }

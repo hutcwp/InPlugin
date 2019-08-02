@@ -22,7 +22,9 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.util.Log;
+import com.hutcwp.small.hook.AMSHookHelper;
 import com.hutcwp.small.hook.BaseDexClassLoaderHookHelper;
+import com.hutcwp.small.internal.ActivityThreadHandlerCallback;
 import com.hutcwp.small.internal.InstrumentationWrapper;
 import com.hutcwp.small.plugin.PluginManager;
 import com.hutcwp.small.plugin.PluginRecord;
@@ -76,9 +78,11 @@ public class ApkPluginLauncher extends PluginLauncher {
                     sBundleInstrumentation = wrapper; // record for later replacement
                 }
 
-//                ReflectAccelerator.setActivityThreadHandlerCallback(new ActivityThreadHandlerCallback());
-            } catch (Exception ignored) {
-                ignored.printStackTrace();
+                AMSHookHelper.hookAMN();
+//                AMSHookHelper.hookActivityThread();
+                ReflectAccelerator.setActivityThreadHandlerCallback(new ActivityThreadHandlerCallback());
+            } catch (Exception e) {
+                Log.e(TAG, "preSetUp : hook error.", e);
                 // Usually, cannot reach here
             }
         }
@@ -92,7 +96,7 @@ public class ApkPluginLauncher extends PluginLauncher {
     @Override
     public void postSetUp() {
         super.postSetUp();
-        for (PluginRecord pluginRecord : PluginManager.pluginRecords) {
+        for (PluginRecord pluginRecord : PluginManager.mPluginRecords) {
             loadPlugin(pluginRecord);
         }
     }

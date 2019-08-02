@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
     public void startService1InPlugin1(View view) {
         try {
             Intent intent = new Intent();
-            String serviceName = PluginManager.pluginRecords.get(0).packageInfo.packageName + ".TestService1";
+            String serviceName = PluginManager.mPluginRecords.get(0).getPackageInfo().packageName + ".TestService1";
             intent.setClass(this, Class.forName(serviceName));
             startService(intent);
         } catch (ClassNotFoundException e) {
@@ -55,8 +55,7 @@ public class MainActivity extends Activity {
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
         try {
-            AMSHookHelper.hookAMN();
-            AMSHookHelper.hookActivityThread();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
