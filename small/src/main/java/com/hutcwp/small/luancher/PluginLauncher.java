@@ -18,6 +18,7 @@ package com.hutcwp.small.luancher;
 
 import android.app.Application;
 import android.content.Context;
+import com.hutcwp.small.plugin.PluginRecord;
 
 /**
  * copy form Small
@@ -33,18 +34,18 @@ public abstract class PluginLauncher {
     public void postSetUp() {
     }
 
-//    public boolean resolvePlugin(PluginRecord plugin) {
-//        if (!preloadPlugin(plugin)) return false;
-//
-//        //loadPlugin(plugin);
-//        return true;
-//    }
-//
-//    public boolean preloadPlugin(PluginRecord plugin) {
-//        return true;
-//    }
-//
-//    public void loadPlugin(PluginRecord plugin) {
-//    }
+    public boolean resolvePlugin(PluginRecord plugin) {
+        if (!preloadPlugin(plugin)) return false;
+
+//        loadPlugin(plugin);
+        return true;
+    }
+
+    public boolean preloadPlugin(PluginRecord plugin) {
+        return true;
+    }
+
+    public void loadPlugin(PluginRecord plugin) {
+    }
 
 }

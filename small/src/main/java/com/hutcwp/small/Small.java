@@ -18,21 +18,28 @@ public final class Small {
 
     private static Application mContext = null;
 
+    private static boolean hasSetUp = false;
+
     public static Context getContext() {
         return mContext;
     }
 
     public static void preSetUp(Application application) {
         Log.i(TAG, "preSetUp");
+        hasSetUp = true;
         mContext = application;
         ReflectAccelerator.init(application);
         ReflectAccelerator.lazyInit(application);
-        PluginManager.init(application);
         PluginManager.INSTANCE.preSetUp(application);
     }
 
     public static void setUp(Context context) {
         Log.i(TAG, "setUp");
+        if (!hasSetUp) {
+            Log.e(TAG, "you must invoke preSetUp method before this!");
+            return;
+        }
+
         PluginManager.INSTANCE.setup(context);
     }
 

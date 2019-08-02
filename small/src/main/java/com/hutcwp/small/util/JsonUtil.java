@@ -20,21 +20,19 @@ public class JsonUtil {
             "\"mPluginRecords\":[\n" +
             "{\n" +
             "\"id\":\"1\",\n" +
-            "\"launchMode\":\"\",\n" +
             "\"loadMode\":3,\n" +
             "\"loadPriority\":\"40\",\n" +
             "\"packageName\":\"com.yy.mobile.plugin.ycloud\",\n" +
             "\"apkFileName\":\"plugina.apk\",\n" +
-            "\"version\":\"7.20.0_maint-SNAPSHOT\"\n" +
+            "\"version\":\"1.0.0\"\n" +
             "},\n" +
             "{\n" +
             "\"id\":\"11\",\n" +
-            "\"launchMode\":\"PLUGINCNETER_PLUGIN_START,PLUGINCENTER_PLUGIN_CLOSE,PK_VIEW_LIVE\",\n" +
             "\"loadMode\":2,\n" +
             "\"loadPriority\":\"600300\",\n" +
             "\"packageName\":\"com.yy.mobile.channelpk\",\n" +
             "\"apkFileName\":\"pluginb.apk\",\n" +
-            "\"version\":\"7.20.0_maint-SNAPSHOT\"\n" +
+            "\"version\":\"1.0.0\"\n" +
             "}\n" +
             "],\n" +
             "\"version\":\"1.0.0\"\n" +
@@ -46,12 +44,10 @@ public class JsonUtil {
         String APKFILE_NAME = "apkFileName";
         String VERSION = "version";
         String LOAD_MODE = "loadMode";
-        String LAUNCH_MODE = "launchMode";
         String URL = "url";
         String SHA1 = "sha1";
         String RULE_ID = "ruleId";
         String LOADPRIORITY = "loadPriority";
-        String COM_TYPE = "comType";
         String ENABLE = "enable";
         String FORCE = "force";
         String DOWNLOAD_MODE = "downloadMode";
@@ -80,9 +76,7 @@ public class JsonUtil {
                     pluginInfo.apkFileName = pluginObject.optString(PluginKeys.APKFILE_NAME);
                     pluginInfo.version = pluginObject.optString(PluginKeys.VERSION);
                     pluginInfo.loadMode = pluginObject.optInt(PluginKeys.LOAD_MODE);
-                    pluginInfo.launchMode = pluginObject.optString(PluginKeys.LAUNCH_MODE);
                     pluginInfo.loadPriority = pluginObject.optInt(PluginKeys.LOADPRIORITY);
-                    pluginInfo.comType = pluginObject.optInt(PluginKeys.COM_TYPE);
                     pluginInfo.downloadMode = pluginObject.optInt(PluginKeys.DOWNLOAD_MODE, 0);
                     plugins.add(pluginInfo);
                 }

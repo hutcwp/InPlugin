@@ -11,7 +11,9 @@ import com.hutcwp.small.util.PluginController;
 import com.hutcwp.small.util.RefInvoke;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 public enum PluginManager {
 
@@ -24,32 +26,60 @@ public enum PluginManager {
     public static volatile Resources mNowResources;
     public static volatile Context mBaseContext;
 
-    //ContextImpl中的LoadedAPK对象mPackageInfo
     public static Object mPackageInfo = null;
 
-    public static void init(Application application) {
+    private final Queue<AsyncLoadRequest> mAsyncLoadRequestQueue = new LinkedList<>();
+
+    private boolean hasInit = false;
+
+    private class AsyncLoadRequest {
+        public final PluginRecord plugin;
+
+        public AsyncLoadRequest(PluginRecord plugin) {
+            this.plugin = plugin;
+        }
+    }
+
+    public void init(Application application) {
         mPackageInfo = RefInvoke.getFieldObject(application.getBaseContext(), "mPackageInfo");
         mBaseContext = application.getBaseContext();
         mNowResources = mBaseContext.getResources();
+        hasInit = true;
     }
 
     public void preSetUp(Application application) {
-        PluginManager.INSTANCE.registerLauncher(new ApkPluginLauncher());
-        PluginManager.INSTANCE.preSetUpLaunchers(application);
+        if (!hasInit) {
+            init(application);
+        }
+        registerLauncher(new ApkPluginLauncher());
+        preSetUpLaunchers(application);
     }
 
     public boolean setup(Context context) {
+        if (!hasInit) {
+            Log.e(TAG, "have you invoke init method?");
+            return false;
+        }
         setupLaunchers(context);
         // 通过plugin.json解析出，需要加载的插件信息
         List<PluginInfo> pluginInfos = JsonUtil.getPluginConfig(JsonUtil.pluginJsonStr);
         if (pluginInfos == null) {
-            Log.e(TAG, "pluginInfos is null, return false!!!");
+            Log.e(TAG, "parse pluginInfos is null, return false!!!");
             return false;
         }
 
-        for (PluginInfo info : pluginInfos) {
-            PluginRecord pluginRecord = PluginRecord.generatePluginRecord(mBaseContext, info);
+        // PluginInfo 转 Plugin
+        List<Plugin> plugins = new ArrayList<>();
+        for (PluginInfo pluginInfo : pluginInfos) {
+            Plugin plugin = new Plugin(pluginInfo);
+            plugins.add(plugin);
+        }
+
+        for (Plugin plugin : plugins) {
+            PluginRecord pluginRecord = PluginRecord.generatePluginRecord(mBaseContext, plugin.getPluginInfo());
+            pluginRecord.applyLaunchers(mPluginLaunchers);
             mPluginRecords.add(pluginRecord);
+            pluginRecord.launch();
             loadSetupPlugins();
         }
         postSetUpLauncher();
@@ -60,6 +90,26 @@ public enum PluginManager {
         for (PluginRecord pluginRecord : mPluginRecords) {
             if (pluginRecord.getPackageInfo() != null) {
                 PluginController.addLoadActivity(pluginRecord.getPackageInfo().activities);
+            }
+            loadPlugin(pluginRecord);
+        }
+    }
+
+    private void loadPlugin(PluginRecord pluginRecord) {
+        Log.i(TAG, "loadPlugin");
+        AsyncLoadRequest request = null;
+        request = new AsyncLoadRequest(pluginRecord);
+        synchronized (mAsyncLoadRequestQueue) {
+            mAsyncLoadRequestQueue.add(request);
+        }
+        loadPluginsCore();
+    }
+
+    private void loadPluginsCore() {
+        synchronized (mAsyncLoadRequestQueue) {
+            while (!mAsyncLoadRequestQueue.isEmpty()) {
+                AsyncLoadRequest asyncLoadRequest = mAsyncLoadRequestQueue.remove();
+                Log.i(TAG, "mAsyncLoadRequestQueue.size = " + mAsyncLoadRequestQueue.size());
             }
         }
     }

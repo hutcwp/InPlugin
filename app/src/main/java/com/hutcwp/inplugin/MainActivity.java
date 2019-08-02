@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import com.hutcwp.small.plugin.PluginManager;
-import com.hutcwp.small.hook.AMSHookHelper;
 
 public class MainActivity extends Activity {
 

@@ -6,6 +6,7 @@ import com.hutcwp.small.luancher.PluginLauncher;
 import com.hutcwp.small.util.DLUtils;
 
 import java.io.File;
+import java.util.List;
 
 public class PluginRecord {
 
@@ -75,6 +76,22 @@ public class PluginRecord {
         pluginRecord.pluginParser = PluginParser.parsePackage(file);
         pluginRecord.setPluginInfo(pluginInfo);
         return pluginRecord;
+    }
+
+    public void launch() {
+        if (pluginLauncher.preloadPlugin(this)) {
+            pluginLauncher.loadPlugin(this);
+        }
+
+    }
+
+    public void applyLaunchers(List<PluginLauncher> mPluginLaunchers) {
+        for (PluginLauncher launcher : mPluginLaunchers) {
+            if (launcher.resolvePlugin(this)) {
+                setPluginLauncher(launcher);
+                return;
+            }
+        }
     }
 
 }

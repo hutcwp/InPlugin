@@ -1,5 +1,7 @@
 package com.hutcwp.small.plugin;
 
+import com.hutcwp.small.util.PluginUtil;
+
 import java.io.File;
 
 /**
@@ -8,33 +10,33 @@ import java.io.File;
  * YY: 909076244
  **/
 public class Plugin {
-    private String      mId;                // 插件ID
+
     private File mApkFile;           // 插件文件 xx.apk
-    private String      mPackageName;       // 组件package name
 
+    private PluginInfo pluginInfo; // 服务器下发插件信息
 
-    public String getmPackageName() {
-        return mPackageName;
+    public Plugin(PluginInfo pluginInfo) {
+        this.pluginInfo = pluginInfo;
     }
 
-    public void setmPackageName(String mPackageName) {
-        this.mPackageName = mPackageName;
+    public PluginInfo getPluginInfo() {
+        return pluginInfo;
+    }
+
+    public String getmPackageName() {
+        return pluginInfo.packageName;
     }
 
     public String getmId() {
-        return mId;
-    }
-
-    public void setmId(String mId) {
-        this.mId = mId;
+        return pluginInfo.id;
     }
 
     public File getmApkFile() {
-        return mApkFile;
-    }
+        if (mApkFile == null) {
+            mApkFile = new File(PluginUtil.getPluginPath(pluginInfo.apkFileName));
+        }
 
-    public void setmApkFile(File mApkFile) {
-        this.mApkFile = mApkFile;
+        return mApkFile;
     }
 
 }
