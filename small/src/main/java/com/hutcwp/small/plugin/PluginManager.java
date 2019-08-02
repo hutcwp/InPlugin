@@ -2,18 +2,18 @@ package com.hutcwp.small.plugin;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.res.Resources;
+import android.content.pm.ActivityInfo;
 import android.util.Log;
+import com.hutcwp.small.Small;
 import com.hutcwp.small.luancher.ApkPluginLauncher;
 import com.hutcwp.small.luancher.PluginLauncher;
 import com.hutcwp.small.util.JsonUtil;
-import com.hutcwp.small.util.PluginController;
-import com.hutcwp.small.util.RefInvoke;
+import com.hutcwp.small.util.PluginUtil;
+import com.hutcwp.small.util.Utils;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 
 public enum PluginManager {
 
@@ -21,36 +21,16 @@ public enum PluginManager {
 
     private static final String TAG = "PluginManager";
 
-    public static List<PluginRecord> mPluginRecords = new ArrayList<>();
-    private List<PluginLauncher> mPluginLaunchers = null;
-    public static volatile Resources mNowResources;
-    public static volatile Context mBaseContext;
-
-    public static Object mPackageInfo = null;
-
-    private final Queue<AsyncLoadRequest> mAsyncLoadRequestQueue = new LinkedList<>();
-
     private boolean hasInit = false;
+    private List<PluginLauncher> mPluginLaunchers = null;
+    public static ConcurrentHashMap<String, Plugin> mPlugins = new ConcurrentHashMap<>(); //用插件id做key，唯一
 
-    private class AsyncLoadRequest {
-        public final PluginRecord plugin;
-
-        public AsyncLoadRequest(PluginRecord plugin) {
-            this.plugin = plugin;
-        }
-    }
-
-    public void init(Application application) {
-        mPackageInfo = RefInvoke.getFieldObject(application.getBaseContext(), "mPackageInfo");
-        mBaseContext = application.getBaseContext();
-        mNowResources = mBaseContext.getResources();
-        hasInit = true;
-    }
 
     public void preSetUp(Application application) {
         if (!hasInit) {
-            init(application);
+            hasInit = true;
         }
+
         registerLauncher(new ApkPluginLauncher());
         preSetUpLaunchers(application);
     }
@@ -60,6 +40,7 @@ public enum PluginManager {
             Log.e(TAG, "have you invoke init method?");
             return false;
         }
+
         setupLaunchers(context);
         // 通过plugin.json解析出，需要加载的插件信息
         List<PluginInfo> pluginInfos = JsonUtil.getPluginConfig(JsonUtil.pluginJsonStr);
@@ -68,49 +49,25 @@ public enum PluginManager {
             return false;
         }
 
-        // PluginInfo 转 Plugin
-        List<Plugin> plugins = new ArrayList<>();
         for (PluginInfo pluginInfo : pluginInfos) {
-            Plugin plugin = new Plugin(pluginInfo);
-            plugins.add(plugin);
+            // 复制apk
+            Utils.extractAssets(Small.mBaseContext, PluginUtil.getPluginPath(pluginInfo.apkFileName));
+            PluginRecord pluginRecord = PluginRecord.generatePluginRecord(
+                    Small.mBaseContext, pluginInfo, mPluginLaunchers);
+            Plugin plugin = new Plugin(pluginInfo, pluginRecord);
+            mPlugins.put(plugin.getPluginInfo().id, plugin);
         }
-
-        for (Plugin plugin : plugins) {
-            PluginRecord pluginRecord = PluginRecord.generatePluginRecord(mBaseContext, plugin.getPluginInfo());
-            pluginRecord.applyLaunchers(mPluginLaunchers);
-            mPluginRecords.add(pluginRecord);
-            pluginRecord.launch();
-            loadSetupPlugins();
-        }
+        loadSetupPlugins();
         postSetUpLauncher();
         return true;
     }
 
+    /**
+     * 加载内置插件
+     */
     public void loadSetupPlugins() {
-        for (PluginRecord pluginRecord : mPluginRecords) {
-            if (pluginRecord.getPackageInfo() != null) {
-                PluginController.addLoadActivity(pluginRecord.getPackageInfo().activities);
-            }
-            loadPlugin(pluginRecord);
-        }
-    }
-
-    private void loadPlugin(PluginRecord pluginRecord) {
-        Log.i(TAG, "loadPlugin");
-        AsyncLoadRequest request = null;
-        request = new AsyncLoadRequest(pluginRecord);
-        synchronized (mAsyncLoadRequestQueue) {
-            mAsyncLoadRequestQueue.add(request);
-        }
-        loadPluginsCore();
-    }
-
-    private void loadPluginsCore() {
-        synchronized (mAsyncLoadRequestQueue) {
-            while (!mAsyncLoadRequestQueue.isEmpty()) {
-                AsyncLoadRequest asyncLoadRequest = mAsyncLoadRequestQueue.remove();
-                Log.i(TAG, "mAsyncLoadRequestQueue.size = " + mAsyncLoadRequestQueue.size());
-            }
+        for (Plugin plugin : mPlugins.values()) {
+            plugin.getPluginRecord().launch();
         }
     }
 
@@ -164,5 +121,17 @@ public enum PluginManager {
         for (PluginLauncher launcher : mPluginLaunchers) {
             launcher.postSetUp();
         }
+    }
+
+    public ActivityInfo getActivityInfoByQuery(String className) {
+        for (Plugin plugin : mPlugins.values()) {
+            for (ActivityInfo activityInfo : plugin.getPluginRecord().getPluginParser().getPackageInfo().activities) {
+                if (activityInfo.name.equals(className)) {
+                    return activityInfo;
+                }
+            }
+        }
+
+        return null;
     }
 }

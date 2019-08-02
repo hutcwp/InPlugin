@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.PatternMatcher;
 import android.util.AttributeSet;
 import android.util.Log;
+import com.hutcwp.small.Small;
 import com.hutcwp.small.util.ReflectAccelerator;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -115,7 +116,7 @@ public class PluginParser {
 
     public PluginParser(File pluginFile) {
         mPluginFile = pluginFile.getPath();
-        mContext = PluginManager.mBaseContext;
+        mContext = Small.mBaseContext;
     }
 
     public static PluginParser parsePackage(File pluginFile) {
@@ -125,7 +126,7 @@ public class PluginParser {
         }
 
         if (!pluginFile.exists()) {
-            Log.e(TAG, "parsePackage bug pluginFile[%s] is not exist" + pluginFile.getAbsoluteFile());
+            Log.e(TAG, "parsePackage bug pluginFile[" + pluginFile.getAbsoluteFile() + "] is not exist");
             return null;
         }
 

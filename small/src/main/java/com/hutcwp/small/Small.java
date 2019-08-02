@@ -1,9 +1,12 @@
 package com.hutcwp.small;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.Log;
 import com.hutcwp.small.plugin.PluginManager;
+import com.hutcwp.small.util.RefInvoke;
 import com.hutcwp.small.util.ReflectAccelerator;
 
 /**
@@ -17,19 +20,30 @@ public final class Small {
     private static final String TAG = "Small";
 
     private static Application mContext = null;
-
     private static boolean hasSetUp = false;
+
+    public static volatile Resources mNowResources;
+    @SuppressLint("StaticFieldLeak")
+    public static volatile Context mBaseContext;
+    public static Object mPackageInfo = null;
 
     public static Context getContext() {
         return mContext;
     }
 
-    public static void preSetUp(Application application) {
-        Log.i(TAG, "preSetUp");
+    private static void init(Application application) {
         hasSetUp = true;
         mContext = application;
+        mBaseContext = application.getBaseContext();
+        mNowResources = mBaseContext.getResources();
+        mPackageInfo = RefInvoke.getFieldObject(application.getBaseContext(), "mPackageInfo");
         ReflectAccelerator.init(application);
         ReflectAccelerator.lazyInit(application);
+    }
+
+    public static void preSetUp(Application application) {
+        Log.i(TAG, "preSetUp");
+        init(application);
         PluginManager.INSTANCE.preSetUp(application);
     }
 
@@ -41,10 +55,6 @@ public final class Small {
         }
 
         PluginManager.INSTANCE.setup(context);
-    }
-
-    public static void postSetUp() {
-        Log.i(TAG, "postSetUp");
     }
 
 }

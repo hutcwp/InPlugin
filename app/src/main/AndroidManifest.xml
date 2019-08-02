@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <application
             android:name=".CApp"
             android:allowBackup="true"
@@ -22,14 +23,11 @@
             </intent-filter>
         </activity>
 
-
         <!--<activity android:name="com.hutcwp.plugina.PluginActivity"/>-->
 
         <activity android:name="com.hutcwp.inplugin.StubActivity"
-        android:screenOrientation="landscape">
-
+                  android:screenOrientation="landscape">
         </activity>
-
 
     </application>
 

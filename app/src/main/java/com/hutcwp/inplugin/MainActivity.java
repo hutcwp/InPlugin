@@ -18,14 +18,14 @@ public class MainActivity extends Activity {
     }
 
     public void startService1InPlugin1(View view) {
-        try {
-            Intent intent = new Intent();
-            String serviceName = PluginManager.mPluginRecords.get(0).getPackageInfo().packageName + ".TestService1";
-            intent.setClass(this, Class.forName(serviceName));
-            startService(intent);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Intent intent = new Intent();
+//            String serviceName = PluginManager.mPluginRecords.get(0).getPackageInfo().packageName + ".TestService1";
+//            intent.setClass(this, Class.forName(serviceName));
+//            startService(intent);
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void startActivityInPlugin1(View view) {

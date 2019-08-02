@@ -11,24 +11,17 @@ import java.io.File;
  **/
 public class Plugin {
 
-    private File mApkFile;           // 插件文件 xx.apk
+    private File mApkFile;           //插件文件 xx.apk
+    private PluginInfo pluginInfo;   //服务器下发插件信息
+    private PluginRecord pluginRecord; //
 
-    private PluginInfo pluginInfo; // 服务器下发插件信息
-
-    public Plugin(PluginInfo pluginInfo) {
+    public Plugin(PluginInfo pluginInfo, PluginRecord pluginRecord) {
         this.pluginInfo = pluginInfo;
+        this.pluginRecord = pluginRecord;
     }
 
     public PluginInfo getPluginInfo() {
         return pluginInfo;
-    }
-
-    public String getmPackageName() {
-        return pluginInfo.packageName;
-    }
-
-    public String getmId() {
-        return pluginInfo.id;
     }
 
     public File getmApkFile() {
@@ -39,4 +32,19 @@ public class Plugin {
         return mApkFile;
     }
 
+    public void setmApkFile(File mApkFile) {
+        this.mApkFile = mApkFile;
+    }
+
+    public void setPluginInfo(PluginInfo pluginInfo) {
+        this.pluginInfo = pluginInfo;
+    }
+
+    public PluginRecord getPluginRecord() {
+        return pluginRecord;
+    }
+
+    public void setPluginRecord(PluginRecord pluginRecord) {
+        this.pluginRecord = pluginRecord;
+    }
 }

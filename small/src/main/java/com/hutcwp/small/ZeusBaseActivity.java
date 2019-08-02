@@ -12,6 +12,6 @@ public class ZeusBaseActivity extends Activity {
 
     @Override
     public Resources getResources() {
-        return PluginManager.mNowResources;
+        return Small.mNowResources;
     }
 }

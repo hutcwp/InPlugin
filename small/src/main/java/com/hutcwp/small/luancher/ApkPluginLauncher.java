@@ -20,6 +20,7 @@ import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.util.Log;
+import com.hutcwp.small.Small;
 import com.hutcwp.small.hook.AMSHookHelper;
 import com.hutcwp.small.internal.ActivityThreadHandlerCallback;
 import com.hutcwp.small.internal.InstrumentationWrapper;
@@ -28,7 +29,6 @@ import com.hutcwp.small.plugin.PluginRecord;
 import com.hutcwp.small.util.PluginDexLoader;
 import com.hutcwp.small.util.PluginUtil;
 import com.hutcwp.small.util.ReflectAccelerator;
-import com.hutcwp.small.util.Utils;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -92,45 +92,48 @@ public class ApkPluginLauncher extends PluginLauncher {
     @Override
     public void postSetUp() {
         super.postSetUp();
-        for (PluginRecord pluginRecord : PluginManager.mPluginRecords) {
-            mergeDexAndResource(pluginRecord);
-        }
+        mergeDexAndResource();
     }
 
     // todo 还需要支持apk,so,jar等类型
     @Override
     public void loadPlugin(PluginRecord pluginRecord) {
-        if (sLoadedApks == null) sLoadedApks = new ConcurrentHashMap<>();
+        if (sLoadedApks == null) {
+            sLoadedApks = new ConcurrentHashMap<>();
+        }
+
+        if (pluginRecord.getPackageInfo() == null) {
+            Log.e(TAG, "pluginRecord.getPackageInfo() == null");
+            return;
+        }
+
         PluginDexLoader.LoadedApk apk = sLoadedApks.get(pluginRecord.getPackageInfo().packageName);
         if (apk == null) {
             apk = new PluginDexLoader.LoadedApk();
             apk.id = pluginRecord.getPluginInfo().id;
             apk.version = pluginRecord.getPluginInfo().version;
-            apk.packageName = pluginRecord.getPluginInfo().packageName;
-            apk.path = PluginUtil.getPluginPath(pluginRecord.getPluginInfo().apkFileName);
+            apk.packageName = pluginRecord.getPackageInfo().packageName;
+            String apkFileName = pluginRecord.getPluginInfo().apkFileName;
+            apk.path = PluginUtil.getPluginPath(apkFileName);
+            apk.apkFile = Small.mBaseContext.getFileStreamPath(apkFileName);
+            apk.dexFile = Small.mBaseContext.getFileStreamPath(apkFileName.replace(".apk", ".dex"));
             sLoadedApks.put(pluginRecord.getPackageInfo().packageName, apk);
         }
     }
 
-    private void mergeDexAndResource(PluginRecord pluginRecord) {
+    private void mergeDexAndResource() {
         if (sLoadedApks == null) {
             return;
         }
 
-        PluginDexLoader.LoadedApk apk = sLoadedApks.get(pluginRecord.getPackageInfo().packageName);
-        if (apk != null) {
-            try {
-                String path = apk.path;
-                String apkName = pluginRecord.getPluginInfo().apkFileName;
-                String dexName = apkName.replace(".apk", ".dex");
-                if (path.endsWith(".apk")) {
-                    Log.i(TAG, "loadPlugin: plugin -> " + apkName);
-                    Utils.extractAssets(PluginManager.mBaseContext, path);
-                    PluginDexLoader.mergeDexs(apkName, dexName);
-                    PluginDexLoader.updateResource(path);
+        for (PluginDexLoader.LoadedApk apk : sLoadedApks.values()) {
+            if (apk != null) {
+                try {
+                    PluginDexLoader.mergeDexs(apk.apkFile, apk.dexFile);
+                    PluginDexLoader.updateResource(apk.path);
+                } catch (Exception e) {
+                    Log.e(TAG, "mergeDexAndResource error ", e);
                 }
-            } catch (Exception e) {
-                Log.e(TAG, "error , loadPlugin error ", e);
             }
         }
     }
@@ -143,7 +146,6 @@ public class ApkPluginLauncher extends PluginLauncher {
     @Override
     public boolean preloadPlugin(PluginRecord plugin) {
         return super.preloadPlugin(plugin);
-
     }
 
 }

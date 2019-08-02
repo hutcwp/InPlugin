@@ -23,7 +23,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.Window;
-import com.hutcwp.small.util.PluginController;
+import com.hutcwp.small.plugin.PluginManager;
 import com.hutcwp.small.util.ReflectAccelerator;
 
 /**
@@ -169,7 +169,7 @@ public class InstrumentationWrapper extends Instrumentation {
     public void callActivityOnCreate(Activity activity, android.os.Bundle icicle) {
         Log.i(TAG, "callActivityOnCreate");
         mHostInstrumentation.callActivityOnCreate(activity, icicle);
-        ActivityInfo activityInfo = PluginController.getActivityInfo(activity.getClass().getName());
+        ActivityInfo activityInfo = PluginManager.INSTANCE.getActivityInfoByQuery(activity.getClass().getName());
         if (activityInfo != null) {
             Log.i(TAG, "find out activityInfo , name is " + activityInfo.name);
             if (Build.VERSION.SDK_INT >= 28) {
