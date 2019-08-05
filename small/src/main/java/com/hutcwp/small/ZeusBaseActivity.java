@@ -2,7 +2,6 @@ package com.hutcwp.small;
 
 import android.app.Activity;
 import android.content.res.Resources;
-import com.hutcwp.small.plugin.PluginManager;
 
 /**
  * 基础的activity
@@ -12,6 +11,6 @@ public class ZeusBaseActivity extends Activity {
 
     @Override
     public Resources getResources() {
-        return Small.mNowResources;
+        return Small.mNowResources != null ? Small.mNowResources : super.getResources();
     }
 }
