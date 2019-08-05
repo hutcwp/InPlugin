@@ -15,3 +15,9 @@
 2. merge dex和资源到host
 3. 插件资源id分段
 4. 采取占位的方式绕过AndroidManifest检查
+
+运行方式：
+
+先执行plugina 和 pluginb的assemble task.生成plugina.apk和pluginb.apk到手机外存的mplugins目录。
+然后运行run app安装宿主包。启动宿组，自动加载插件包。
+
