@@ -19,6 +19,10 @@ package com.hutcwp.small.luancher;
 import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
+import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
 import com.hutcwp.small.Small;
 import com.hutcwp.small.hook.AMSHookHelper;
@@ -30,6 +34,8 @@ import com.hutcwp.small.util.PluginDexLoader;
 import com.hutcwp.small.util.PluginUtil;
 import com.hutcwp.small.util.ReflectAccelerator;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -54,13 +60,30 @@ public class ApkPluginLauncher extends PluginLauncher {
 
     private static final String TAG = "ApkPluginLauncher";
 
-    private static final int FIRSTACTIVITY_CHECK_COUNT_MAX = 4;
-    private static int firstActivityCheckCount = 0;
 
     private static Instrumentation sHostInstrumentation;
     private static Instrumentation sBundleInstrumentation;
 
     private static ConcurrentHashMap<String, PluginDexLoader.LoadedApk> sLoadedApks; //key:packageName
+
+    private static ConcurrentHashMap<String, ActivityInfo> sLoadedActivities = new ConcurrentHashMap<String, ActivityInfo>();
+
+    private static ConcurrentHashMap<String, List<IntentFilter>> sLoadedIntentFilters;
+
+    public static ConcurrentHashMap<String, ActivityInfo> getsLoadedActivities() {
+        return sLoadedActivities;
+    }
+
+    public static ConcurrentHashMap<String, List<IntentFilter>> getsLoadedIntentFilters() {
+        return sLoadedIntentFilters;
+    }
+
+    private static HashSet<String> sActivityClasses;
+
+    public static boolean containsActivity(String name) {
+        return sActivityClasses != null && sActivityClasses.contains(name);
+    }
+
 
     @Override
     public void preSetUp(Application context) {
@@ -87,6 +110,26 @@ public class ApkPluginLauncher extends PluginLauncher {
     @Override
     public void setUp(Context context) {
         super.setUp(context);
+        try {
+            // Read the registered classes in host's manifest file
+            PackageInfo pi;
+            try {
+                pi = context.getPackageManager().getPackageInfo(
+                        context.getPackageName(), PackageManager.GET_ACTIVITIES);
+            } catch (PackageManager.NameNotFoundException ignored) {
+                // Never reach
+                return;
+            }
+            ActivityInfo[] as = pi.activities;
+            if (as != null) {
+                sActivityClasses = new HashSet<String>();
+                for (ActivityInfo ai : as) {
+                    sActivityClasses.add(ai.name);
+                }
+            }
+        } catch (Throwable throwable) {
+            sActivityClasses = new HashSet<>();
+        }
     }
 
     @Override
@@ -118,6 +161,25 @@ public class ApkPluginLauncher extends PluginLauncher {
             apk.apkFile = Small.mBaseContext.getFileStreamPath(apkFileName);
             apk.dexFile = Small.mBaseContext.getFileStreamPath(apkFileName.replace(".apk", ".dex"));
             sLoadedApks.put(pluginRecord.getPackageInfo().packageName, apk);
+        }
+
+        // Record activities for intent redirection
+        if (sLoadedActivities == null) sLoadedActivities = new ConcurrentHashMap<>();
+        if (pluginRecord.getPackageInfo() != null) {
+            for (ActivityInfo ai : pluginRecord.getPluginParser().getPackageInfo().activities) {
+                sLoadedActivities.put(ai.name, ai);
+            }
+        }
+
+        // Record intent-filters for implicit action
+        if (pluginRecord.getPluginParser() != null) {
+            ConcurrentHashMap<String, List<IntentFilter>> filters = pluginRecord.getPluginParser().getIntentFilters();
+            if (filters != null) {
+                if (sLoadedIntentFilters == null) {
+                    sLoadedIntentFilters = new ConcurrentHashMap<String, List<IntentFilter>>();
+                }
+                sLoadedIntentFilters.putAll(filters);
+            }
         }
     }
 

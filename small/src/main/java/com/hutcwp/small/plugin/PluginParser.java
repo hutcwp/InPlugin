@@ -318,7 +318,7 @@ public class PluginParser {
                 ai.labelRes = sa.getResourceId(R.styleable.AndroidManifestActivity_label, 0);
                 ai.icon = sa.getResourceId(R.styleable.AndroidManifestActivity_icon, 0);
                 ai.theme = sa.getResourceId(R.styleable.AndroidManifestActivity_theme, 0);
-                ai.launchMode = sa.getInteger(R.styleable.AndroidManifestActivity_launchMode, 0);
+                ai.launchMode = sa.getInteger(R.styleable.AndroidManifestActivity_launchMode, ActivityInfo.LAUNCH_MULTIPLE);
                 //noinspection ResourceType
                 ai.screenOrientation = sa.getInt(
                         R.styleable.AndroidManifestActivity_screenOrientation,

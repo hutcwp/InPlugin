@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.hutcwp.mpluginlib">
+          package="com.hutcwp.small">
+    <!-- permission for accessing plugin apk -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
             android:allowBackup="true"
@@ -9,6 +12,64 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".SmallTestActivity">
+        </activity>
+        <activity
+                android:name=".A"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:launchMode="standard"/>
+        <activity
+                android:name=".A1"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:theme="@android:style/Theme.Translucent"/> <!-- 4 singleTop mode -->
+        <activity
+                android:name=".A10"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:launchMode="singleTop"/>
+        <activity
+                android:name=".A11"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:launchMode="singleTop"/>
+        <activity
+                android:name=".A12"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:launchMode="singleTop"/>
+        <activity
+                android:name=".A13"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:launchMode="singleTop"/> <!-- 4 singleTask mode -->
+        <activity
+                android:name=".A20"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:launchMode="singleTask"/>
+        <activity
+                android:name=".A21"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:launchMode="singleTask"/>
+        <activity
+                android:name=".A22"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:launchMode="singleTask"/>
+        <activity
+                android:name=".A23"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:launchMode="singleTask"/> <!-- 4 singleInstance mode -->
+        <activity
+                android:name=".A30"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:launchMode="singleInstance"/>
+        <activity
+                android:name=".A31"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:launchMode="singleInstance"/>
+        <activity
+                android:name=".A32"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:launchMode="singleInstance"/>
+        <activity
+                android:name=".A33"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:launchMode="singleInstance"/>
     </application>
 
 </manifest>

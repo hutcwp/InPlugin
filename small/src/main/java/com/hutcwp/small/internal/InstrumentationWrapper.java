@@ -24,7 +24,10 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.Window;
 import com.hutcwp.small.plugin.PluginManager;
+import com.hutcwp.small.util.ActivityQueueUtil;
 import com.hutcwp.small.util.ReflectAccelerator;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Class for redirect activity from Stub(AndroidManifest.xml) to Real(Plugin)
@@ -32,7 +35,7 @@ import com.hutcwp.small.util.ReflectAccelerator;
 public class InstrumentationWrapper extends Instrumentation {
 
     private static final String TAG = "InstrumentationWrapper";
-    private static final int STUB_ACTIVITIES_COUNT = 4;
+
     private Instrumentation mHostInstrumentation;
 
     public InstrumentationWrapper(Instrumentation hostInstrumentation) {
@@ -47,10 +50,7 @@ public class InstrumentationWrapper extends Instrumentation {
 //            Context who, IBinder contextThread, IBinder token, Activity target,
 //            Intent intent, int requestCode, android.os.Bundle options)
 //            throws InvocationTargetException, IllegalAccessException {
-//        Intent replaceIntent = wrapIntent(intent);
-//        if (replaceIntent != null) {
-//            intent = replaceIntent;
-//        }
+//        ActivityQueueUtil.INSTANCE.wrapIntent(intent);
 //        return ReflectAccelerator.execStartActivity(mHostInstrumentation,
 //                who, contextThread, token, target, intent, requestCode, options);
 //    }
@@ -62,10 +62,7 @@ public class InstrumentationWrapper extends Instrumentation {
 //    public ActivityResult execStartActivity(
 //            Context who, IBinder contextThread, IBinder token, Activity target,
 //            Intent intent, int requestCode) throws InvocationTargetException, IllegalAccessException {
-//        Intent replaceIntent = wrapIntent(intent);
-//        if (replaceIntent != null) {
-//            intent = replaceIntent;
-//        }
+//
 //        return ReflectAccelerator.execStartActivity(mHostInstrumentation,
 //                who, contextThread, token, target, intent, requestCode);
 //    }
