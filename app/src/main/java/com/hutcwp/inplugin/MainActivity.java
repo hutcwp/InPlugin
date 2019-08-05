@@ -31,7 +31,7 @@ public class MainActivity extends Activity {
     public void startActivityInPlugin1(View view) {
         try {
             Intent intent = new Intent();
-            String activityName = "com.hutcwp.plugina.PluginActivity";
+            String activityName = "com.hutcwp.pluginb.PluginBMainActivity";
             intent.setClass(this, Class.forName(activityName));
             startActivity(intent);
         } catch (Exception e) {

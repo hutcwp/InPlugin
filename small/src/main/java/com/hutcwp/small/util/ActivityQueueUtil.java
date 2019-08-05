@@ -20,6 +20,7 @@ import java.util.Set;
  * Created by hutcwp on 2019-08-05 11:05
  * email: caiwenpeng@yy.com
  * YY: 909076244
+ * 管理Activity栈
  **/
 public enum ActivityQueueUtil {
 
@@ -46,7 +47,7 @@ public enum ActivityQueueUtil {
     /**
      * Get an usable stub activity clazz from real activity
      */
-    public static String dequeueStubActivity(int launchMode, ActivityInfo ai, String realActivityClazz) {
+    public String dequeueStubActivity(int launchMode, ActivityInfo ai, String realActivityClazz) {
         Log.i("test", "dequeueStubActivity: launchMode = " + launchMode);
         if (launchMode == ActivityInfo.LAUNCH_MULTIPLE) {
             // In standard mode, the stub activity is reusable.
@@ -93,9 +94,9 @@ public enum ActivityQueueUtil {
      * Unbind the stub activity from real activity
      */
     public void inqueueStubActivity(int launchMode, ActivityInfo ai, String realActivityClazz) {
+        Log.i(TAG, "inqueueStubActivity,realActivityClazz = " + realActivityClazz + " ai = " + ai.toString());
         if (launchMode == ActivityInfo.LAUNCH_MULTIPLE) return;
         if (mStubQueue == null) return;
-
         int countForMode = STUB_ACTIVITIES_COUNT;
         int offset = (launchMode - 1) * countForMode;
         for (int i = 0; i < countForMode; i++) {
@@ -117,14 +118,12 @@ public enum ActivityQueueUtil {
                 launchMode = ActivityInfo.LAUNCH_SINGLE_TOP;
             }
         }
-
         return launchMode;
     }
 
     public Intent wrapIntent(Intent rawIntent) {
         Intent newIntent = new Intent();
         newIntent.putExtra(AMSHookHelper.EXTRA_TARGET_INTENT, rawIntent);
-
         ComponentName component = rawIntent.getComponent();
         String realClazz;
         if (component == null) {
@@ -144,13 +143,13 @@ public enum ActivityQueueUtil {
         newIntent.addCategory(REDIRECT_FLAG + realClazz);
         String stubClazz = realClazz;
         if (ApkPluginLauncher.getsLoadedActivities() != null) {
-            Log.d("test", "ApkPluginLauncher.getsLoadedActivities() = " + ApkPluginLauncher.getsLoadedActivities());
+            Log.d(TAG, "ApkPluginLauncher.getsLoadedActivities() = " + ApkPluginLauncher.getsLoadedActivities());
             if (!ApkPluginLauncher.containsActivity(stubClazz)) {
                 stubClazz = dequeueStubActivity(getLaunchMode(ai, rawIntent), ai, realClazz);
-                Log.i("test", "stubClazz is " + stubClazz);
+                Log.i(TAG, "stubClazz is " + stubClazz);
             }
         }
-        Log.i("test", String.format("wrapIntent - %s ---> %s", realClazz, stubClazz));
+        Log.i(TAG, String.format("wrapIntent - %s ---> %s", realClazz, stubClazz));
         newIntent.setComponent(new ComponentName(Small.getContext(), stubClazz));
         return newIntent;
     }

@@ -23,11 +23,10 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.Window;
+import com.hutcwp.small.luancher.ApkPluginLauncher;
 import com.hutcwp.small.plugin.PluginManager;
 import com.hutcwp.small.util.ActivityQueueUtil;
 import com.hutcwp.small.util.ReflectAccelerator;
-
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * Class for redirect activity from Stub(AndroidManifest.xml) to Real(Plugin)
@@ -249,23 +248,21 @@ public class InstrumentationWrapper extends Instrumentation {
         mHostInstrumentation.callActivityOnStop(activity);
     }
 
-//    @Override
-//    public void callActivityOnDestroy(Activity activity) {
-//
+    @Override
+    public void callActivityOnDestroy(Activity activity) {
 //        ActivityTaskMgr.INSTANCE.popFromActivityStack(activity);
-//
-//        do {
-//            if (sLoadedActivities == null) break;
-//            String realClazz = activity.getClass().getName();
-//            ActivityInfo ai = sLoadedActivities.get(realClazz);
-//            if (ai == null) break;
-//
-//            if (!ActivityLauncher.containsActivity(realClazz)) {
-//                inqueueStubActivity(getLaunchMode(ai, activity.getIntent()), ai, realClazz);
-//            }
-//        } while (false);
-//        mHostInstrumentation.callActivityOnDestroy(activity);
-//    }
+        if (ApkPluginLauncher.getsLoadedActivities() != null) {
+            String realClazz = activity.getClass().getName();
+            ActivityInfo ai = ApkPluginLauncher.getsLoadedActivities().get(realClazz);
+            if (ai != null) {
+                if (!ApkPluginLauncher.containsActivity(realClazz)) {
+                    ActivityQueueUtil.INSTANCE.inqueueStubActivity(getLaunchMode(ai, activity.getIntent()), ai, realClazz);
+                }
+            }
+        }
+
+        mHostInstrumentation.callActivityOnDestroy(activity);
+    }
 
     @Override
     public void callActivityOnResume(Activity activity) {
