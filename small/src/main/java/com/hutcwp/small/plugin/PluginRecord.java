@@ -1,7 +1,11 @@
 package com.hutcwp.small.plugin;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
+import android.util.Log;
+import android.view.ViewGroup;
 import com.hutcwp.small.Small;
 import com.hutcwp.small.luancher.PluginLauncher;
 import com.hutcwp.small.util.DLUtils;
@@ -75,7 +79,8 @@ public class PluginRecord {
      * @param mPluginLaunchers
      * @return
      */
-    public static PluginRecord generatePluginRecord(Context context, PluginInfo pluginInfo, List<PluginLauncher> mPluginLaunchers) {
+    public static PluginRecord generatePluginRecord(
+            Context context, PluginInfo pluginInfo, List<PluginLauncher> mPluginLaunchers) {
         File file = context.getFileStreamPath(pluginInfo.apkFileName);
         PluginRecord pluginRecord = new PluginRecord();
         pluginRecord.pluginPath = file.getAbsolutePath();
@@ -87,9 +92,57 @@ public class PluginRecord {
     }
 
     public void launch() {
-//        copyToAssert();
         if (pluginLauncher.preloadPlugin(this)) {
             pluginLauncher.loadPlugin(this);
+        }
+    }
+
+    /**
+     * 激活插件
+     *
+     * @param
+     */
+    public void activePlugin() {
+        final String className = getPackageInfo().packageName
+                + "." + IPluginEntryPoint.ENTRY_POINT_ENUM_CLASS_NAME;
+
+        try {
+            final Class<java.lang.Enum> pluginClz =
+                    (Class<java.lang.Enum>) Class.forName(className);
+
+            final Object obj = Enum.valueOf(pluginClz,
+                    IPluginEntryPoint.ENUM_INSTANCE_NAME);
+
+            if (obj instanceof IPluginEntryPoint) {
+                ((IPluginEntryPoint) obj).initialize();
+            }
+
+        } catch (Throwable e) {
+            Log.e("Plugin", "activePlugin initialize failed. msg = ", e);
+        }
+    }
+
+    /**
+     * 启动组件
+     */
+    public boolean execPlugin() {
+        final String className = getPackageInfo().packageName
+                + "." + IPluginEntryPoint.ENTRY_POINT_ENUM_CLASS_NAME;
+
+        try {
+            final Class<java.lang.Enum> pluginClz =
+                    (Class<java.lang.Enum>) Class.forName(className);
+
+            final Object obj = Enum.valueOf(pluginClz,
+                    IPluginEntryPoint.ENUM_INSTANCE_NAME);
+
+            if (obj instanceof IPluginEntryPoint) {
+                ((IPluginEntryPoint) obj).mainEntry();
+            }
+            return true;
+        } catch (Throwable e) {
+            Log.e("Plugin", "activePlugin mainEntry failed msg", e);
+            return false;
         }
     }
 
