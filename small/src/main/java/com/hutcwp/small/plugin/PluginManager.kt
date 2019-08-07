@@ -2,7 +2,6 @@ package com.hutcwp.small.plugin
 
 import android.app.Application
 import android.content.Context
-import android.content.pm.ActivityInfo
 import android.util.Log
 import com.hutcwp.small.Small
 import com.hutcwp.small.luancher.ApkPluginLauncher
@@ -10,8 +9,7 @@ import com.hutcwp.small.luancher.PluginLauncher
 import com.hutcwp.small.util.JsonUtil
 import com.hutcwp.small.util.PluginUtil
 import com.hutcwp.small.util.Utils
-
-import java.util.ArrayList
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 enum class PluginManager {
@@ -31,11 +29,27 @@ enum class PluginManager {
         return true
     }
 
-    fun activePlugin() {
-        for (plugin in mPlugins.values) {
-            plugin.pluginRecord.activePlugin()
-            plugin.pluginRecord.execPlugin()
+    fun activeSinglePlugin(pluginId: String, listener: Small.OnActiveListener): Boolean {
+        if (mPlugins[pluginId] == null) {
+            Log.i(TAG, "pluginId $pluginId not find in mPlugins")
+            return false
         }
+        return activePlugin(listOf(mPlugins[pluginId]!!), listener)
+    }
+
+    fun activePlugin(pluginList: List<Plugin>, listener: Small.OnActiveListener): Boolean {
+        pluginList.forEach {
+            if (mPlugins[it.pluginInfo.id] == null) {
+                Log.i(TAG, "plugin not find in mPlugin List, Please check you plugin id define in `plugin.json`")
+                listener.onActive(Small.ActivePluginResult.PluginActiveFail)
+            } else {
+                if (!it.pluginRecord.activePlugin()) {
+                    listener.onActive(Small.ActivePluginResult.PluginActiveFail)
+                }
+            }
+        }
+        listener.onActive(Small.ActivePluginResult.PluginActiveSuccess)
+        return true
     }
 
     /**
@@ -51,9 +65,9 @@ enum class PluginManager {
 
         for (pluginInfo in pluginInfos) {
             // 复制apk
-            Utils.extractAssets(Small.mBaseContext, PluginUtil.getPluginPath(pluginInfo.apkFileName))
+            Utils.extractAssets(Small.getContext(), PluginUtil.getPluginPath(pluginInfo.apkFileName))
             val pluginRecord = PluginRecord.generatePluginRecord(
-                Small.mBaseContext, pluginInfo, mPluginLaunchers
+                Small.getContext(), pluginInfo, mPluginLaunchers
             )
             val plugin = Plugin(pluginInfo, pluginRecord)
             mPlugins[plugin.pluginInfo.id] = plugin
@@ -124,8 +138,17 @@ enum class PluginManager {
         }
     }
 
+    /**
+     * 插件是否可用
+     */
+    fun pluginEnable(id: String): Boolean {
+        val plugin = mPlugins[id]
+        return plugin?.isEnable ?: false
+    }
+
     companion object {
         private const val TAG = "PluginManager"
+        // 代表所有的插件
         var mPlugins = ConcurrentHashMap<String, Plugin>() //用插件id做key，唯一
     }
 }

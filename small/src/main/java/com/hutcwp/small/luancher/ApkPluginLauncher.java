@@ -157,8 +157,8 @@ public class ApkPluginLauncher extends PluginLauncher {
             apk.packageName = pluginRecord.getPackageInfo().packageName;
             String apkFileName = pluginRecord.getPluginInfo().apkFileName;
             apk.path = PluginUtil.getPluginPath(apkFileName);
-            apk.apkFile = Small.mBaseContext.getFileStreamPath(apkFileName);
-            apk.dexFile = Small.mBaseContext.getFileStreamPath(apkFileName.replace(".apk", ".dex"));
+            apk.apkFile = Small.getContext().getFileStreamPath(apkFileName);
+            apk.dexFile = Small.getContext().getFileStreamPath(apkFileName.replace(".apk", ".dex"));
             sLoadedApks.put(pluginRecord.getPackageInfo().packageName, apk);
         }
 

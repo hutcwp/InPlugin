@@ -99,7 +99,7 @@ public class PluginRecord {
      *
      * @param
      */
-    public void activePlugin() {
+    public boolean activePlugin() {
         final String className = getPackageInfo().packageName
                 + "." + IPluginEntryPoint.ENTRY_POINT_ENUM_CLASS_NAME;
 
@@ -113,10 +113,11 @@ public class PluginRecord {
             if (obj instanceof IPluginEntryPoint) {
                 ((IPluginEntryPoint) obj).initialize();
             }
-
+            return true;
         } catch (Throwable e) {
             Log.e("Plugin", "activePlugin initialize failed. msg = ", e);
         }
+        return false;
     }
 
     /**
@@ -147,7 +148,7 @@ public class PluginRecord {
      * copy apk 到内存
      */
     private void copyToAssert() {
-        Utils.extractAssets(Small.mBaseContext, PluginUtil.getPluginPath(getPluginInfo().apkFileName));
+        Utils.extractAssets(Small.getContext(), PluginUtil.getPluginPath(getPluginInfo().apkFileName));
     }
 
     public void applyLaunchers(List<PluginLauncher> mPluginLaunchers) {

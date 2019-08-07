@@ -116,7 +116,7 @@ public class PluginParser {
 
     public PluginParser(File pluginFile) {
         mPluginFile = pluginFile.getPath();
-        mContext = Small.mBaseContext;
+        mContext = Small.getContext();
     }
 
     public static PluginParser parsePackage(File pluginFile) {

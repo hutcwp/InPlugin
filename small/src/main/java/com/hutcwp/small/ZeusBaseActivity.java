@@ -11,6 +11,6 @@ public class ZeusBaseActivity extends Activity {
 
     @Override
     public Resources getResources() {
-        return Small.mNowResources != null ? Small.mNowResources : super.getResources();
+        return Small.getResources() != null ? Small.getResources() : super.getResources();
     }
 }

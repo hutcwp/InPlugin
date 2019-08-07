@@ -98,6 +98,8 @@ public class ReflectAccelerator {
     private static AssetManager sAssetManager;
     private static List<String> sAssetPathList;
 
+    public static Object mPackageInfo = null;
+
     private static ArrayMap<Object, WeakReference<Object>> sResourceImpls;
     private static Object/*ResourcesImpl*/ sMergedResourcesImpl;
 
@@ -168,6 +170,8 @@ public class ReflectAccelerator {
             sActivity_mInstrumentation = getDeclaredField(Activity.class, "mInstrumentation");
             sActivityThread_mH = getDeclaredField(sActivitythread_class, "mH");
             sHandler_mCallback = getDeclaredField(Handler.class, "mCallback");
+            mPackageInfo = RefInvoke.getFieldObject(context, "mPackageInfo");
+
         } catch (Exception e) {
             e.printStackTrace();
             Logging.error(TAG, "", e);

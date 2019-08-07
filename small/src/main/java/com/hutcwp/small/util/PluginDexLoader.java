@@ -34,42 +34,43 @@ public class PluginDexLoader {
     public static void updateResource(String pluginPath) {
         Log.i(TAG, "updateResource");
         try {
-            if (Small.mNowResources == null) {
+            if (Small.getResources() == null) {
                 Log.i(TAG, "init resource");
                 AssetManager assetManager = AssetManager.class.newInstance();
                 Method addAssetPath = AssetManager.class.getMethod("addAssetPath", String.class);
-                addAssetPath.invoke(assetManager, Small.mBaseContext.getPackageResourcePath());
+                addAssetPath.invoke(assetManager, Small.getContext().getPackageResourcePath());
                 addAssetPath.invoke(assetManager, pluginPath);
                 Log.i(TAG, "addAssetPath path = " + pluginPath);
 
                 Resources newResources = new Resources(assetManager,
-                        Small.mBaseContext.getResources().getDisplayMetrics(),
-                        Small.mBaseContext.getResources().getConfiguration());
+                        Small.getContext().getResources().getDisplayMetrics(),
+                        Small.getContext().getResources().getConfiguration());
 
-                RefInvoke.setFieldObject(Small.mBaseContext, "mResources", newResources);
+                RefInvoke.setFieldObject(Small.getContext(), "mResources", newResources);
                 //这是最主要的需要替换的，如果不支持插件运行时更新，只留这一个就可以了
-                RefInvoke.setFieldObject(Small.mPackageInfo, "mResources", newResources);
+                RefInvoke.setFieldObject(ReflectAccelerator.mPackageInfo, "mResources", newResources);
 
-                Small.mNowResources = newResources;
+                Small.setNowResources(newResources);
                 //需要清理mTheme对象，否则通过inflate方式加载资源会报错
                 //如果是activity动态加载插件，则需要把activity的mTheme对象也设置为null
-                RefInvoke.setFieldObject(Small.mBaseContext, "mTheme", null);
+                RefInvoke.setFieldObject(Small.getContext(), "mTheme", null);
             } else {
-                AssetManager assetManager = Small.mNowResources.getAssets();
+                AssetManager assetManager = Small.getResources().getAssets();
                 Method addAssetPath = AssetManager.class.getMethod("addAssetPath", String.class);
                 addAssetPath.invoke(assetManager, pluginPath);
                 Resources newResources = new Resources(assetManager,
-                        Small.mBaseContext.getResources().getDisplayMetrics(),
-                        Small.mBaseContext.getResources().getConfiguration());
+                        Small.getContext().getResources().getDisplayMetrics(),
+                        Small.getContext().getResources().getConfiguration());
 
-                RefInvoke.setFieldObject(Small.mBaseContext, "mResources", newResources);
+                // todo 这里有哥异常，后面再看
+                RefInvoke.setFieldObject(Small.getContext(), "mResources", newResources);
                 //这是最主要的需要替换的，如果不支持插件运行时更新，只留这一个就可以了
-                RefInvoke.setFieldObject(Small.mPackageInfo, "mResources", newResources);
+                RefInvoke.setFieldObject(ReflectAccelerator.mPackageInfo, "mResources", newResources);
 
-                Small.mNowResources = newResources;
+                Small.setNowResources(newResources);
                 //需要清理mTheme对象，否则通过inflate方式加载资源会报错
                 //如果是activity动态加载插件，则需要把activity的mTheme对象也设置为null
-                RefInvoke.setFieldObject(Small.mBaseContext, "mTheme", null);
+                RefInvoke.setFieldObject(Small.getContext(), "mTheme", null);
             }
         } catch (Throwable e) {
             Log.e(TAG, "updateResource error.", e);
@@ -77,11 +78,11 @@ public class PluginDexLoader {
     }
 
     public static void mergeDexs(String apkName, String dexName) {
-        File dexFile = Small.mBaseContext.getFileStreamPath(apkName);
-        File optDexFile = Small.mBaseContext.getFileStreamPath(dexName);
+        File dexFile = Small.getContext().getFileStreamPath(apkName);
+        File optDexFile = Small.getContext().getFileStreamPath(dexName);
         try {
             BaseDexClassLoaderHookHelper.patchClassLoader(
-                    Small.mBaseContext.getClassLoader(), dexFile, optDexFile);
+                    Small.getContext().getClassLoader(), dexFile, optDexFile);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,7 +91,7 @@ public class PluginDexLoader {
     public static void mergeDexs(File dexFile, File optDexFile) {
         try {
             BaseDexClassLoaderHookHelper.patchClassLoader(
-                    Small.mBaseContext.getClassLoader(), dexFile, optDexFile);
+                    Small.getContext().getClassLoader(), dexFile, optDexFile);
         } catch (Exception e) {
             e.printStackTrace();
         }

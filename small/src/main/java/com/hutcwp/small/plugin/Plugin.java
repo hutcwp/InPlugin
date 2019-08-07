@@ -14,6 +14,24 @@ public class Plugin {
     private File mApkFile;           //插件文件 xx.apk
     private PluginInfo pluginInfo;   //服务器下发插件信息
     private PluginRecord pluginRecord; //
+    private boolean enable = false; //是否可用
+    private String version;
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
     public Plugin(PluginInfo pluginInfo, PluginRecord pluginRecord) {
         this.pluginInfo = pluginInfo;

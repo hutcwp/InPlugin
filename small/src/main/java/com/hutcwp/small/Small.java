@@ -1,12 +1,10 @@
 package com.hutcwp.small;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
 import com.hutcwp.small.plugin.PluginManager;
-import com.hutcwp.small.util.RefInvoke;
 import com.hutcwp.small.util.ReflectAccelerator;
 
 /**
@@ -20,12 +18,8 @@ public final class Small {
     private static final String TAG = "Small";
 
     private static boolean hasSetUp = false;
-    public static Object mPackageInfo = null;
-    private static Application mContext = null;
-    public static volatile Resources mNowResources;
-
-    @SuppressLint("StaticFieldLeak")
-    public static volatile Context mBaseContext;
+    private static volatile Resources mNowResources;
+    private static volatile Application mApp;
 
 
     /**
@@ -40,17 +34,34 @@ public final class Small {
         void onSetup(SetupResult result);
     }
 
+    /**
+     * 组件激活回调
+     */
+    public enum ActivePluginResult {
+        PluginActiveSuccess,
+        PluginActiveFail,
+    }
+
+    public interface OnActiveListener {
+        void onActive(ActivePluginResult result);
+    }
 
     public static Context getContext() {
-        return mContext;
+        return mApp;
+    }
+
+    public static Resources getResources() {
+        return mNowResources;
+    }
+
+    public static void setNowResources(Resources mNowResources) {
+        Small.mNowResources = mNowResources;
     }
 
     private static void init(Application application) {
         hasSetUp = true;
-        mContext = application;
-        mBaseContext = application.getBaseContext();
-        mNowResources = mBaseContext.getResources();
-        mPackageInfo = RefInvoke.getFieldObject(application.getBaseContext(), "mPackageInfo");
+        mApp = application;
+        mNowResources = mApp.getResources();
         ReflectAccelerator.init(application);
         ReflectAccelerator.lazyInit(application);
     }
@@ -67,19 +78,24 @@ public final class Small {
             throw new UnsupportedOperationException("you must invoke `preSetUp` method before this!");
         }
 
-        if (PluginManager.INSTANCE.setup(mContext)) {
-            PluginManager.INSTANCE.loadSetupPlugins();
-            hasSetUp = true;
+        if (PluginManager.INSTANCE.setup(mApp)) {
             if (listener != null) {
                 listener.onSetup(SetupResult.PluginSetupSuccess);
             }
+
+            PluginManager.INSTANCE.loadSetupPlugins();
+            hasSetUp = true;
         } else {
             listener.onSetup(SetupResult.PluginSetupFail);
         }
     }
 
-    public static void activePlugins() {
-        PluginManager.INSTANCE.activePlugin();
+    public static void activeSinglePlugin(String pluginId, OnActiveListener listener) {
+        if (!PluginManager.INSTANCE.pluginEnable(pluginId)) {
+            loadPlugin(pluginId);
+        }
+
+        PluginManager.INSTANCE.activeSinglePlugin(pluginId, listener);
     }
 
     public static void loadPlugin(String pluginId) {
