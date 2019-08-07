@@ -28,7 +28,7 @@ public class JsonUtil {
             "},\n" +
             "{\n" +
             "\"id\":\"11\",\n" +
-            "\"loadMode\":2,\n" +
+            "\"loadMode\":0,\n" +
             "\"loadPriority\":\"600300\",\n" +
             "\"packageName\":\"com.yy.mobile.channelpk\",\n" +
             "\"apkFileName\":\"pluginb.apk\",\n" +

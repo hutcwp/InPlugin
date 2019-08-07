@@ -13,11 +13,17 @@
             android:text="Create TestService1 in Plugin1"/>
 
     <Button
+            android:id="@+id/startActivityInPlugina"
+            android:layout_width="158dp"
+            android:layout_height="wrap_content"
+            android:onClick="startActivityInPlugina"
+            android:text="start Activity in Plugina"/>
+    <Button
             android:id="@+id/btnStartActivityInPlugin1"
             android:layout_width="158dp"
             android:layout_height="wrap_content"
-            android:onClick="startActivityInPlugin1"
-            android:text="start Activity in Plugin1"/>
+            android:onClick="startMainActivityInPluginB"
+            android:text="start MainActivity in Pluginb"/>
     <Button
             android:id="@+id/btnStartActivityInPluginB"
             android:layout_width="158dp"

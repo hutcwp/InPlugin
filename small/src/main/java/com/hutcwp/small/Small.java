@@ -82,4 +82,8 @@ public final class Small {
         PluginManager.INSTANCE.activePlugin();
     }
 
+    public static void loadPlugin(String pluginId) {
+        PluginManager.INSTANCE.loadSinglePlugin(pluginId);
+    }
+
 }

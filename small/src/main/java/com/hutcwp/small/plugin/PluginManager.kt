@@ -59,8 +59,25 @@ enum class PluginManager {
             mPlugins[plugin.pluginInfo.id] = plugin
         }
         for (plugin in mPlugins.values) {
-            plugin.pluginRecord.launch()
+            // 内置插件
+            if (plugin.pluginInfo.loadMode == 0) {
+                plugin.pluginRecord.launch()
+            }
         }
+        postSetUpLauncher()
+    }
+
+    fun loadSinglePlugin(pluginId: String) {
+        mPlugins[pluginId]?.let {
+            loadPlugins(it)
+        }
+    }
+
+    /**
+     * 加载插件
+     */
+    private fun loadPlugins(plugin: Plugin) {
+        plugin.pluginRecord.launch()
         postSetUpLauncher()
     }
 
@@ -98,22 +115,13 @@ enum class PluginManager {
         }
     }
 
+    /**
+     * 启动完成
+     */
     private fun postSetUpLauncher() {
         mPluginLaunchers?.forEach { launcher ->
             launcher.postSetUp()
         }
-    }
-
-    fun getActivityInfoByQuery(className: String): ActivityInfo? {
-        for (plugin in mPlugins.values) {
-            for (activityInfo in plugin.pluginRecord.pluginParser.packageInfo.activities) {
-                if (activityInfo.name == className) {
-                    return activityInfo
-                }
-            }
-        }
-
-        return null
     }
 
     companion object {

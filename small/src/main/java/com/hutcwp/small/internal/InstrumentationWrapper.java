@@ -24,7 +24,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.Window;
 import com.hutcwp.small.luancher.ApkPluginLauncher;
-import com.hutcwp.small.plugin.PluginManager;
 import com.hutcwp.small.util.ActivityQueueUtil;
 import com.hutcwp.small.util.ReflectAccelerator;
 
@@ -165,7 +164,8 @@ public class InstrumentationWrapper extends Instrumentation {
     public void callActivityOnCreate(Activity activity, android.os.Bundle icicle) {
         Log.i(TAG, "callActivityOnCreate");
         mHostInstrumentation.callActivityOnCreate(activity, icicle);
-        ActivityInfo activityInfo = PluginManager.INSTANCE.getActivityInfoByQuery(activity.getClass().getName());
+//        ActivityInfo activityInfo = PluginManager.INSTANCE.getActivityInfoByQuery(activity.getClass().getName());
+        ActivityInfo activityInfo = ApkPluginLauncher.getsLoadedActivities().get(activity.getClass().getName());
         if (activityInfo != null) {
             Log.i(TAG, "find out activityInfo , name is " + activityInfo.name);
             if (Build.VERSION.SDK_INT >= 28) {
@@ -256,7 +256,8 @@ public class InstrumentationWrapper extends Instrumentation {
             ActivityInfo ai = ApkPluginLauncher.getsLoadedActivities().get(realClazz);
             if (ai != null) {
                 if (!ApkPluginLauncher.containsActivity(realClazz)) {
-                    ActivityQueueUtil.INSTANCE.inqueueStubActivity(getLaunchMode(ai, activity.getIntent()), ai, realClazz);
+                    ActivityQueueUtil.INSTANCE.
+                            inqueueStubActivity(getLaunchMode(ai, activity.getIntent()), ai, realClazz);
                 }
             }
         }

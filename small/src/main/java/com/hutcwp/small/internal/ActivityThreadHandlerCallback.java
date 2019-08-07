@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import com.hutcwp.small.hook.AMSHookHelper;
-import com.hutcwp.small.plugin.PluginManager;
+import com.hutcwp.small.luancher.ApkPluginLauncher;
 import com.hutcwp.small.util.RefInvoke;
 import com.hutcwp.small.util.ReflectAccelerator;
 
@@ -77,7 +77,8 @@ public class ActivityThreadHandlerCallback implements Handler.Callback {
                 if (targetComponentName != null) {
                     try {
                         String className = targetComponentName.getClassName();
-                        ActivityInfo activityInfo = PluginManager.INSTANCE.getActivityInfoByQuery(className);
+//                        ActivityInfo activityInfo = PluginManager.INSTANCE.getActivityInfoByQuery(className);
+                        ActivityInfo activityInfo = ApkPluginLauncher.getsLoadedActivities().get(className);
                         if (activityInfo != null) {
                             Log.i(TAG, "find out activityInfo , name is " + activityInfo.name);
                             ReflectAccelerator.setActivityInfo(r, activityInfo);

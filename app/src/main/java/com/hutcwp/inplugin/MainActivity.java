@@ -1,10 +1,10 @@
 package com.hutcwp.inplugin;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import com.hutcwp.small.Small;
 
 public class MainActivity extends Activity {
 
@@ -17,6 +17,7 @@ public class MainActivity extends Activity {
     }
 
     public void startService1InPlugin1(View view) {
+        Small.loadPlugin("1");
 //        try {
 //            Intent intent = new Intent();
 //            String serviceName = PluginManager.mPluginRecords.get(0).getPackageInfo().packageName + ".TestService1";
@@ -27,7 +28,18 @@ public class MainActivity extends Activity {
 //        }
     }
 
-    public void startActivityInPlugin1(View view) {
+    public void startActivityInPlugina(View view) {
+        try {
+            Intent intent = new Intent();
+            String activityName = "com.hutcwp.plugina.PluginActivity";
+            intent.setClass(this, Class.forName(activityName));
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void startMainActivityInPluginB(View view) {
         try {
             Intent intent = new Intent();
             String activityName = "com.hutcwp.pluginb.PluginBMainActivity";
@@ -44,16 +56,6 @@ public class MainActivity extends Activity {
             String activityName = "com.hutcwp.pluginb.PluginBActivity";
             intent.setClass(this, Class.forName(activityName));
             startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(newBase);
-        try {
-
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -28,7 +28,6 @@ import com.hutcwp.small.Small;
 import com.hutcwp.small.hook.AMSHookHelper;
 import com.hutcwp.small.internal.ActivityThreadHandlerCallback;
 import com.hutcwp.small.internal.InstrumentationWrapper;
-import com.hutcwp.small.plugin.PluginManager;
 import com.hutcwp.small.plugin.PluginRecord;
 import com.hutcwp.small.util.PluginDexLoader;
 import com.hutcwp.small.util.PluginUtil;
@@ -66,7 +65,7 @@ public class ApkPluginLauncher extends PluginLauncher {
 
     private static ConcurrentHashMap<String, PluginDexLoader.LoadedApk> sLoadedApks; //key:packageName
 
-    private static ConcurrentHashMap<String, ActivityInfo> sLoadedActivities = new ConcurrentHashMap<String, ActivityInfo>();
+    private static ConcurrentHashMap<String, ActivityInfo> sLoadedActivities = new ConcurrentHashMap<>();
 
     private static ConcurrentHashMap<String, List<IntentFilter>> sLoadedIntentFilters;
 
