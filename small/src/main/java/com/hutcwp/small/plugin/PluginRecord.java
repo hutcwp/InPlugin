@@ -1,11 +1,8 @@
 package com.hutcwp.small.plugin;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.util.Log;
-import android.view.ViewGroup;
 import com.hutcwp.small.Small;
 import com.hutcwp.small.luancher.PluginLauncher;
 import com.hutcwp.small.util.DLUtils;

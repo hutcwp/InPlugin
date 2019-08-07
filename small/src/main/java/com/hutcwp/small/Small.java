@@ -19,13 +19,27 @@ public final class Small {
 
     private static final String TAG = "Small";
 
-    private static Application mContext = null;
     private static boolean hasSetUp = false;
-
+    public static Object mPackageInfo = null;
+    private static Application mContext = null;
     public static volatile Resources mNowResources;
+
     @SuppressLint("StaticFieldLeak")
     public static volatile Context mBaseContext;
-    public static Object mPackageInfo = null;
+
+
+    /**
+     * 组件加载完成回调函数
+     */
+    public enum SetupResult {
+        PluginSetupSuccess,
+        PluginSetupFail,
+    }
+
+    public interface OnSetupListener {
+        void onSetup(SetupResult result);
+    }
+
 
     public static Context getContext() {
         return mContext;
@@ -47,14 +61,25 @@ public final class Small {
         PluginManager.INSTANCE.preSetUp(application);
     }
 
-    public static void setUp(Context context) {
+    public static void setUp(final OnSetupListener listener, boolean syncLoad) {
         Log.i(TAG, "setUp");
         if (!hasSetUp) {
-            Log.e(TAG, "you must invoke preSetUp method before this!");
-            return;
+            throw new UnsupportedOperationException("you must invoke `preSetUp` method before this!");
         }
 
-        PluginManager.INSTANCE.setup(context);
+        if (PluginManager.INSTANCE.setup(mContext)) {
+            PluginManager.INSTANCE.loadSetupPlugins();
+            hasSetUp = true;
+            if (listener != null) {
+                listener.onSetup(SetupResult.PluginSetupSuccess);
+            }
+        } else {
+            listener.onSetup(SetupResult.PluginSetupFail);
+        }
+    }
+
+    public static void activePlugins() {
+        PluginManager.INSTANCE.activePlugin();
     }
 
 }

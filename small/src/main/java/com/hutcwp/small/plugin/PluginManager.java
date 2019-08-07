@@ -59,11 +59,10 @@ public enum PluginManager {
         }
         loadSetupPlugins();
         postSetUpLauncher();
-        activePluginEntryPoint();
         return true;
     }
 
-    private void activePluginEntryPoint() {
+    public void activePlugin() {
         for (Plugin plugin : mPlugins.values()) {
             plugin.getPluginRecord().activePlugin();
             plugin.getPluginRecord().execPlugin();

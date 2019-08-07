@@ -29,7 +29,13 @@ class CApp : Application() {
                     // Storage permission are allowed.
                     Log.i(TAG, "onAllowed")
                     Small.preSetUp(this)
-                    Small.setUp(this)
+                    Small.setUp({
+                        if (it == Small.SetupResult.PluginSetupSuccess) {
+                            Log.i(TAG, "set up success.")
+                        } else if (it == Small.SetupResult.PluginSetupFail) {
+                            Log.e(TAG, "set up fail.")
+                        }
+                    }, true)
                 }
                 .onDenied {
                     // Storage permission are not allowed.
@@ -46,7 +52,13 @@ class CApp : Application() {
         Log.i(TAG, "onCreate")
         if (permissionGrant()) {
             Small.preSetUp(this)
-            Small.setUp(this)
+            Small.setUp({
+                if (it == Small.SetupResult.PluginSetupSuccess) {
+                    Log.i(TAG, "set up success.")
+                } else if (it == Small.SetupResult.PluginSetupFail) {
+                    Log.e(TAG, "set up fail.")
+                }
+            }, true)
         }
     }
 
