@@ -56,6 +56,17 @@ enum class PluginManager {
      * 加载内置插件
      */
     fun loadSetupPlugins() {
+        parsePluginsFromJson()
+        mPlugins.values.forEach { plugin ->
+            // 内置插件
+            if (plugin.pluginInfo.loadMode == 0) {
+                plugin.pluginRecord.launch()
+            }
+        }
+        postSetUpLauncher()
+    }
+
+    private fun parsePluginsFromJson() {
         // 通过plugin.json解析出，需要加载的插件信息
         val pluginInfos = JsonUtil.getPluginConfig(JsonUtil.pluginJsonStr)
         if (pluginInfos == null) {
@@ -64,7 +75,7 @@ enum class PluginManager {
         }
 
         for (pluginInfo in pluginInfos) {
-            // 复制apk
+            // 复制apk ，todo 复制不应该放在这里
             Utils.extractAssets(Small.getContext(), PluginUtil.getPluginPath(pluginInfo.apkFileName))
             val pluginRecord = PluginRecord.generatePluginRecord(
                 Small.getContext(), pluginInfo, mPluginLaunchers
@@ -72,13 +83,6 @@ enum class PluginManager {
             val plugin = Plugin(pluginInfo, pluginRecord)
             mPlugins[plugin.pluginInfo.id] = plugin
         }
-        for (plugin in mPlugins.values) {
-            // 内置插件
-            if (plugin.pluginInfo.loadMode == 0) {
-                plugin.pluginRecord.launch()
-            }
-        }
-        postSetUpLauncher()
     }
 
     fun loadSinglePlugin(pluginId: String) {

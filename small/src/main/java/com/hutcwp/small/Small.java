@@ -79,12 +79,12 @@ public final class Small {
         }
 
         if (PluginManager.INSTANCE.setup(mApp)) {
+            hasSetUp = true;
             if (listener != null) {
                 listener.onSetup(SetupResult.PluginSetupSuccess);
             }
 
             PluginManager.INSTANCE.loadSetupPlugins();
-            hasSetUp = true;
         } else {
             listener.onSetup(SetupResult.PluginSetupFail);
         }

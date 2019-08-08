@@ -89,9 +89,23 @@ public class PluginRecord {
     }
 
     public void launch() {
+        if (isExtensionPlugin()) {
+            checkPlugin();
+        }
+
         if (pluginLauncher.preloadPlugin(this)) {
             pluginLauncher.loadPlugin(this);
         }
+    }
+
+    private void checkPlugin() {
+        if (Small.getContext().getFileStreamPath(pluginInfo.apkFileName).exists()) {
+            Log.e(TAG, "file not exist. path is " + getPluginPath());
+        }
+    }
+
+    private boolean isExtensionPlugin() {
+        return this.pluginInfo.loadMode != 0;
     }
 
     /**
