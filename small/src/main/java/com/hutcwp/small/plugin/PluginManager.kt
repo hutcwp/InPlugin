@@ -29,22 +29,33 @@ enum class PluginManager {
         return true
     }
 
+    /**
+     * 启动单个插件
+     */
     fun activeSinglePlugin(pluginId: String, listener: Small.OnActiveListener): Boolean {
         if (mPlugins[pluginId] == null) {
             Log.i(TAG, "pluginId $pluginId not find in mPlugins")
             return false
         }
-        return activePlugin(listOf(mPlugins[pluginId]!!), listener)
+        return activePlugins(listOf(mPlugins[pluginId]!!), listener)
     }
 
-    fun activePlugin(pluginList: List<Plugin>, listener: Small.OnActiveListener): Boolean {
+    /**
+     * 批量启动插件
+     */
+    private fun activePlugins(pluginList: List<Plugin>, listener: Small.OnActiveListener): Boolean {
         pluginList.forEach {
             if (mPlugins[it.pluginInfo.id] == null) {
                 Log.i(TAG, "plugin not find in mPlugin List, Please check you plugin id define in `plugin.json`")
                 listener.onActive(Small.ActivePluginResult.PluginActiveFail)
             } else {
+                if (!it.isEnable) {
+                    Log.e(TAG, "plugin id[${it.pluginInfo.id}] is not enable!")
+                    listener.onActive(Small.ActivePluginResult.PluginActiveFail)
+                }
                 if (!it.pluginRecord.activePlugin()) {
                     listener.onActive(Small.ActivePluginResult.PluginActiveFail)
+                    Log.e(TAG, "plugin id[${it.pluginInfo.id}] activePlugin failed!")
                 }
             }
         }
@@ -85,6 +96,9 @@ enum class PluginManager {
         }
     }
 
+    /**
+     * 加载单个插件
+     */
     fun loadSinglePlugin(pluginId: String) {
         mPlugins[pluginId]?.let {
             loadPlugins(it)

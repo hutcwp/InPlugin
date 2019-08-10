@@ -129,7 +129,7 @@ public class PluginRecord {
             }
             return true;
         } catch (Throwable e) {
-            Log.e("Plugin", "activePlugin initialize failed. msg = ", e);
+            Log.e("Plugin", "activePlugins initialize failed. msg = ", e);
         }
         return false;
     }
@@ -153,7 +153,7 @@ public class PluginRecord {
             }
             return true;
         } catch (Throwable e) {
-            Log.e("Plugin", "activePlugin mainEntry failed msg", e);
+            Log.e("Plugin", "activePlugins mainEntry failed msg", e);
             return false;
         }
     }
