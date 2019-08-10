@@ -22,16 +22,24 @@ public class JsonUtil {
             "\"id\":\"1\",\n" +
             "\"loadMode\":3,\n" +
             "\"loadPriority\":\"40\",\n" +
-            "\"packageName\":\"com.yy.mobile.plugin.ycloud\",\n" +
+            "\"packageName\":\"com.hutcwp.plugin.plugina\",\n" +
             "\"apkFileName\":\"plugina.apk\",\n" +
             "\"version\":\"1.0.0\"\n" +
             "},\n" +
             "{\n" +
             "\"id\":\"11\",\n" +
             "\"loadMode\":0,\n" +
-            "\"loadPriority\":\"600300\",\n" +
-            "\"packageName\":\"com.yy.mobile.channelpk\",\n" +
+            "\"loadPriority\":\"2\",\n" +
+            "\"packageName\":\"com.hutcwp.plugin.pluginb\",\n" +
             "\"apkFileName\":\"pluginb.apk\",\n" +
+            "\"version\":\"1.0.0\"\n" +
+            "},\n" +
+            "{\n" +
+            "\"id\":\"11\",\n" +
+            "\"loadMode\":0,\n" +
+            "\"loadPriority\":\"3\",\n" +
+            "\"packageName\":\"com.hutcwp.plugin.pluginc\",\n" +
+            "\"apkFileName\":\"pluginc.apk\",\n" +
             "\"version\":\"1.0.0\"\n" +
             "}\n" +
             "],\n" +

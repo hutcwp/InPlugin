@@ -6,9 +6,7 @@ import android.util.Log
 import com.hutcwp.small.Small
 import com.hutcwp.small.luancher.ApkPluginLauncher
 import com.hutcwp.small.luancher.PluginLauncher
-import com.hutcwp.small.util.JsonUtil
-import com.hutcwp.small.util.PluginUtil
-import com.hutcwp.small.util.Utils
+import com.hutcwp.small.update.UpdateManager
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -79,18 +77,15 @@ enum class PluginManager {
 
     private fun parsePluginsFromJson() {
         // 通过plugin.json解析出，需要加载的插件信息
-        val pluginInfos = JsonUtil.getPluginConfig(JsonUtil.pluginJsonStr)
+        val pluginInfos = UpdateManager.INSTANCE.parsePluginsFromJson()
         if (pluginInfos == null) {
-            Log.e(TAG, "parse pluginInfos is null, return false!!!")
+            Log.e(UpdateManager.TAG, "parse pluginInfos is null, return false!!!")
             return
         }
 
         for (pluginInfo in pluginInfos) {
-            // 复制apk ，todo 复制不应该放在这里
-            Utils.extractAssets(Small.getContext(), PluginUtil.getPluginPath(pluginInfo.apkFileName))
-            val pluginRecord = PluginRecord.generatePluginRecord(
-                Small.getContext(), pluginInfo, mPluginLaunchers
-            )
+            val pluginRecord = PluginRecord
+                .generatePluginRecord(Small.getContext(), pluginInfo, mPluginLaunchers)
             val plugin = Plugin(pluginInfo, pluginRecord)
             mPlugins[plugin.pluginInfo.id] = plugin
         }
