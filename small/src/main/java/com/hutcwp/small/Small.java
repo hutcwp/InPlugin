@@ -4,8 +4,12 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
+import com.hutcwp.small.plugin.Plugin;
 import com.hutcwp.small.plugin.PluginManager;
 import com.hutcwp.small.util.ReflectAccelerator;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by hutcwp on 2019-07-29 16:10
@@ -15,7 +19,7 @@ import com.hutcwp.small.util.ReflectAccelerator;
  **/
 public final class Small {
 
-    private static final String TAG = "Small";
+    public static final String TAG = "Small";
 
     private static boolean hasSetUp = false;
     private static volatile Resources mNowResources;
@@ -43,7 +47,7 @@ public final class Small {
     }
 
     public interface OnActiveListener {
-        void onActive(ActivePluginResult result);
+        void onActive(String pluginId, ActivePluginResult result);
     }
 
     public static Context getContext() {
@@ -100,6 +104,10 @@ public final class Small {
 
     public static void loadPlugin(String pluginId) {
         PluginManager.INSTANCE.loadSinglePlugin(pluginId);
+    }
+
+    public static Collection<Plugin> getPlugins() {
+        return PluginManager.INSTANCE.getPlugins$small_debug();
     }
 
 }

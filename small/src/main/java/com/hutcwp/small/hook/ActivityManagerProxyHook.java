@@ -2,6 +2,7 @@ package com.hutcwp.small.hook;
 
 import android.content.Intent;
 import android.util.Log;
+import com.hutcwp.small.Small;
 import com.hutcwp.small.util.ActivityQueueUtil;
 
 import java.lang.reflect.InvocationHandler;
@@ -19,9 +20,7 @@ class ActivityManagerProxyHook implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-
-        Log.e("test", method.getName());
-
+        Log.d(Small.TAG, method.getName());
         if ("startActivity".equals(method.getName())) {
             // 只拦截这个方法
             // 替换参数, 任你所为;甚至替换原始Activity启动别的Activity偷梁换柱
@@ -41,7 +40,7 @@ class ActivityManagerProxyHook implements InvocationHandler {
             if (newIntent != null) {
                 args[index] = newIntent;
             }
-            Log.d("test", "hook success. newIntent = " + newIntent);
+            Log.d("Small", "hook success. newIntent = " + newIntent);
             return method.invoke(mBase, args);
 
         }

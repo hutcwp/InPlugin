@@ -46,9 +46,9 @@ public class PluginDexLoader {
                         Small.getContext().getResources().getDisplayMetrics(),
                         Small.getContext().getResources().getConfiguration());
 
-                RefInvoke.setFieldObject(Small.getContext(), "mResources", newResources);
+                RefInvoke.setFieldObject(Small.getContext().getApplicationContext(), "mResources", newResources);
                 //这是最主要的需要替换的，如果不支持插件运行时更新，只留这一个就可以了
-                RefInvoke.setFieldObject(ReflectAccelerator.mPackageInfo, "mResources", newResources);
+//                RefInvoke.setFieldObject(ReflectAccelerator.mPackageInfo, "mResources", newResources);
 
                 Small.setNowResources(newResources);
                 //需要清理mTheme对象，否则通过inflate方式加载资源会报错
@@ -62,10 +62,10 @@ public class PluginDexLoader {
                         Small.getContext().getResources().getDisplayMetrics(),
                         Small.getContext().getResources().getConfiguration());
 
-                // todo 这里有哥异常，后面再看
+                // todo 这里有异常，后面再看
                 RefInvoke.setFieldObject(Small.getContext(), "mResources", newResources);
                 //这是最主要的需要替换的，如果不支持插件运行时更新，只留这一个就可以了
-                RefInvoke.setFieldObject(ReflectAccelerator.mPackageInfo, "mResources", newResources);
+//                RefInvoke.setFieldObject(ReflectAccelerator.mPackageInfo, "mResources", newResources);
 
                 Small.setNowResources(newResources);
                 //需要清理mTheme对象，否则通过inflate方式加载资源会报错

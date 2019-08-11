@@ -30,5 +30,11 @@
             android:layout_height="wrap_content"
             android:onClick="startActivityInPluginB"
             android:text="start Activity in PluginB"/>
+    <Button
+            android:id="@+id/btnStartPluginInfoActivity"
+            android:layout_width="158dp"
+            android:layout_height="wrap_content"
+            android:onClick="startPluginInfoActivity"
+            android:text="start Plugin Activity in host"/>
 
 </LinearLayout>

@@ -12,13 +12,16 @@ public enum PluginEntryPoint implements IPluginEntryPoint {
 
     INSTANCE;
 
+    private static final String TAG = "PluginEntryPoint";
+
+
     @Override
     public void initialize() {
-        Log.i("test", "initialize");
+        Log.i(TAG, "initialize");
     }
 
     @Override
     public void mainEntry() {
-        Log.i("test", "mainEntry");
+        Log.i(TAG, "mainEntry");
     }
 }

@@ -12,6 +12,8 @@ import java.io.File;
  **/
 public class PluginUtil {
 
+    private static final String TAG = "PluginUtil";
+
     /**
      * 获取插件存放目录
      *
@@ -24,7 +26,7 @@ public class PluginUtil {
             if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
                 return Environment.getExternalStorageDirectory().getAbsoluteFile() + File.separator + "mplugins";
             } else {
-                Log.e("test", "无法读取外存。");
+                Log.e(TAG, "无法读取外存。");
             }
         }
         return null;

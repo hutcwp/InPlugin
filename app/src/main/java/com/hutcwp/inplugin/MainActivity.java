@@ -18,21 +18,12 @@ public class MainActivity extends Activity {
     }
 
     public void startService1InPlugin1(View view) {
-//        Small.loadPlugin("1");
         Small.activeSinglePlugin("1", new Small.OnActiveListener() {
             @Override
-            public void onActive(Small.ActivePluginResult result) {
-                Log.i("test", "result = " + result);
+            public void onActive(String pluginId, Small.ActivePluginResult result) {
+                Log.i("MainActivity", "result = " + result);
             }
         });
-//        try {
-//            Intent intent = new Intent();
-//            String serviceName = PluginManager.mPluginRecords.get(0).getPackageInfo().packageName + ".TestService1";
-//            intent.setClass(this, Class.forName(serviceName));
-//            startService(intent);
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
     }
 
     public void startActivityInPlugina(View view) {
@@ -66,5 +57,9 @@ public class MainActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void startPluginInfoActivity(View view) {
+        startActivity(new Intent(MainActivity.this, PluginInfoActivity.class));
     }
 }

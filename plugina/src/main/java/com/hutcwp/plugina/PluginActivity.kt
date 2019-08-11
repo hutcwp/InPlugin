@@ -11,18 +11,20 @@ class PluginActivity : ZeusBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("test", "pluginA PluginActivity onCreate")
+        Log.i(TAG, "pluginA PluginActivity onCreate")
         val btn = Button(this)
         btn.text = "button create a"
         setContentView(btn)
 
         btn.setOnClickListener {
-            Log.i("test", "click button.")
+            Log.i(TAG, "click button.")
             val intent = Intent()
             intent.setClassName("com.hutcwp.inplugin", "com.hutcwp.inplugin.ActivityA")
             startActivity(intent)
         }
+    }
 
-//        setContentView(R.layout.activity_main_plugin)
+    companion object {
+        private const val TAG = "PluginActivity"
     }
 }

@@ -48,7 +48,7 @@ public enum ActivityQueueUtil {
      * Get an usable stub activity clazz from real activity
      */
     public String dequeueStubActivity(int launchMode, ActivityInfo ai, String realActivityClazz) {
-        Log.i("test", "dequeueStubActivity: launchMode = " + launchMode);
+        Log.i(Small.TAG, "dequeueStubActivity: launchMode = " + launchMode);
         if (launchMode == ActivityInfo.LAUNCH_MULTIPLE) {
             // In standard mode, the stub activity is reusable.
             // Cause the `windowIsTranslucent' attribute cannot be dynamically set,
@@ -110,8 +110,8 @@ public enum ActivityQueueUtil {
 
     private int getLaunchMode(ActivityInfo ai, Intent intent) {
         int launchMode = ai.launchMode;
-        Log.i("test", "ai = " + ai);
-        Log.i("test", "launchMode = " + launchMode + " flag = " + intent.getFlags());
+        Log.i(Small.TAG, "ai = " + ai);
+        Log.i(Small.TAG, "launchMode = " + launchMode + " flag = " + intent.getFlags());
         if (ai.launchMode == ActivityInfo.LAUNCH_MULTIPLE) {
             int flag = intent.getFlags();
             if ((flag & Intent.FLAG_ACTIVITY_SINGLE_TOP) == Intent.FLAG_ACTIVITY_SINGLE_TOP) {

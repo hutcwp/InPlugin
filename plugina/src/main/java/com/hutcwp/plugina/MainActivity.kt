@@ -8,7 +8,7 @@ class MainActivity : ZeusBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("test", "plugin MainActivity onCreate")
+        Log.i("MainActivity", "plugin MainActivity onCreate")
         setContentView(R.layout.activity_main_plugin)
     }
 }

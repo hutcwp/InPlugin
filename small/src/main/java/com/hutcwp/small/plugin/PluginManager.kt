@@ -15,7 +15,12 @@ enum class PluginManager {
     INSTANCE;
 
     private var mPluginLaunchers: MutableList<PluginLauncher>? = null
+    // 代表所有的插件
+    private var mPlugins = ConcurrentHashMap<String, Plugin>() //用插件id做key，唯一
 
+    internal fun getPlugins(): Collection<Plugin> {
+        return mPlugins.values
+    }
 
     fun preSetUp(application: Application) {
         registerLauncher(ApkPluginLauncher())
@@ -30,35 +35,43 @@ enum class PluginManager {
     /**
      * 启动单个插件
      */
-    fun activeSinglePlugin(pluginId: String, listener: Small.OnActiveListener): Boolean {
+    fun activeSinglePlugin(pluginId: String, listener: Small.OnActiveListener) {
         if (mPlugins[pluginId] == null) {
-            Log.i(TAG, "pluginId $pluginId not find in mPlugins")
-            return false
+            Log.e(TAG, "plugin id[$pluginId] not find in mPlugins, check it in `plugin.json`.")
+            listener.onActive("", Small.ActivePluginResult.PluginActiveFail)
         }
-        return activePlugins(listOf(mPlugins[pluginId]!!), listener)
+
+        activePlugins(listOf(mPlugins[pluginId]!!), listener)
     }
 
     /**
      * 批量启动插件
      */
-    private fun activePlugins(pluginList: List<Plugin>, listener: Small.OnActiveListener): Boolean {
+    private fun activePlugins(pluginList: List<Plugin>, listener: Small.OnActiveListener) {
+        if (pluginList.isEmpty()) {
+            listener.onActive("", Small.ActivePluginResult.PluginActiveFail)
+            Log.e(TAG, "pluginList is empty!")
+        }
+
         pluginList.forEach {
             if (mPlugins[it.pluginInfo.id] == null) {
-                Log.i(TAG, "plugin not find in mPlugin List, Please check you plugin id define in `plugin.json`")
-                listener.onActive(Small.ActivePluginResult.PluginActiveFail)
+                Log.e(TAG, "plugin not find in mPlugin List, Please check you plugin id has defined in `plugin.json`")
+                listener.onActive(it.pluginInfo.id, Small.ActivePluginResult.PluginActiveFail)
             } else {
                 if (!it.isEnable) {
-                    Log.e(TAG, "plugin id[${it.pluginInfo.id}] is not enable!")
-                    listener.onActive(Small.ActivePluginResult.PluginActiveFail)
+                    Log.e(TAG, "plugin id[${it.pluginInfo.id}] is not enable! please load plugin before that.")
+                    listener.onActive(it.pluginInfo.id, Small.ActivePluginResult.PluginActiveFail)
                 }
+
                 if (!it.pluginRecord.activePlugin()) {
-                    listener.onActive(Small.ActivePluginResult.PluginActiveFail)
                     Log.e(TAG, "plugin id[${it.pluginInfo.id}] activePlugin failed!")
+                    listener.onActive(it.pluginInfo.id, Small.ActivePluginResult.PluginActiveFail)
+                } else {
+                    Log.i(TAG, "plugin id[${it.pluginInfo.id}] activePlugin success!")
+                    listener.onActive(it.pluginInfo.id, Small.ActivePluginResult.PluginActiveSuccess)
                 }
             }
         }
-        listener.onActive(Small.ActivePluginResult.PluginActiveSuccess)
-        return true
     }
 
     /**
@@ -69,6 +82,7 @@ enum class PluginManager {
         mPlugins.values.forEach { plugin ->
             // 内置插件
             if (plugin.pluginInfo.loadMode == 0) {
+                plugin.isEnable = true
                 plugin.pluginRecord.launch()
             }
         }
@@ -79,7 +93,7 @@ enum class PluginManager {
         // 通过plugin.json解析出，需要加载的插件信息
         val pluginInfos = UpdateManager.INSTANCE.parsePluginsFromJson()
         if (pluginInfos == null) {
-            Log.e(UpdateManager.TAG, "parse pluginInfos is null, return false!!!")
+            Log.e(TAG, "parse pluginInfos is null, return false!!!")
             return
         }
 
@@ -105,6 +119,7 @@ enum class PluginManager {
      */
     private fun loadPlugins(plugin: Plugin) {
         plugin.pluginRecord.launch()
+        plugin.isEnable = true
         postSetUpLauncher()
     }
 
@@ -161,7 +176,5 @@ enum class PluginManager {
 
     companion object {
         private const val TAG = "PluginManager"
-        // 代表所有的插件
-        var mPlugins = ConcurrentHashMap<String, Plugin>() //用插件id做key，唯一
     }
 }
